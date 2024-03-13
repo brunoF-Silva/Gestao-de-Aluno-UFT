@@ -8,6 +8,8 @@ DB_FILE = ROOT_DIR / DB_NAME
 connection = sqlite3.connect(DB_FILE)
 cursor = connection.cursor()
 
-
+cursor.execute(
+    f'CREATE TABLE IF NOT EXISTS ALUNO
+)
 cursor.close()
 connection.close()
