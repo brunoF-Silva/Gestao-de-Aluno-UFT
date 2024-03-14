@@ -32,12 +32,14 @@ class Aluno(models.Model):
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
     campus = models.ForeignKey(Campus, on_delete=models.CASCADE)
     data_de_nasc = models.DateField()
-    foto = models.ImageField(upload_to='aluno_fotos/')
+    foto = models.ImageField(upload_to='home/img/')
     situacao = models.CharField(max_length=50)
     forma_de_ingresso = models.CharField(max_length=50)
-    curso_classificacao = models.CharField(max_length=50)
-    sexo = models.CharField(max_length=1, choices=[('M', 'Masculino'), ('F', 'Feminino'), ('O', 'Outro')])
+    sexo = models.CharField(max_length=1, choices=[('M', 'Masculino'), ('F', 'Feminino')])
     raca = models.CharField(max_length=100)
+
+    #class Meta:
+        #managed = False 
 
     def __str__(self):
         return self.nome
