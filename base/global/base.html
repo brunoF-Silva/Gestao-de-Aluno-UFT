@@ -1,5 +1,44 @@
 {% include "global/partials/head.html" %}
-<body>
-  {% block texto %} oi {% endblock  %}
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- sidebar -->
+        {% include "global/partials/sidebar.html" %}
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            
+            <!-- Main Content -->
+            <div id='content'>
+                <!-- topbar -->
+                {% include "global/partials/topbar.html" %}
+                <div class="container-fluid">
+                    {% block content %}{% endblock %}
+                </div>
+
+            </div>
+
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            {% include "global/partials/footer.html" %}
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    {% include "global/partials/scroll_button.html" %}
+
+    <!-- Logout Modal-->
+    {% include "global/partials/logout.html" %}
+
+    <!-- Scripts -->
+    {% include "global/partials/scripts.html" %}
 </body>
+
 </html>
