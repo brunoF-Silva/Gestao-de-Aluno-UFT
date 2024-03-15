@@ -5,7 +5,10 @@ from . import views
 urlpatterns = [
   path('', views.home),
   path('cadastrar/', views.cadastrar),
-  path('alunos/', views.AlunoListView.as_view()),
+  path('alunos/', views.AlunoListView.as_view(), name='listar_alunos'),
   path("about/", views.AboutView.as_view()),
-  path("profile/<int:pk>", views.AlunoDetailView.as_view())
+  path("profile/<int:pk>", views.AlunoDetailView.as_view()),
+  path('criar/', views.AlunoCreateView.as_view(), name='criar_aluno'),
+  path('mesmo-curso/', views.ListaAlunosMesmoCursoView.as_view(), name='alunos-mesmo-curso'),
+
 ]

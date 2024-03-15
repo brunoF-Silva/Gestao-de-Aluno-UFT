@@ -1,5 +1,7 @@
 <ul>
     {% for obj in object_list %}
-        <li>{{ obj.nome }}</li>
+        {% if {{curso.nome}} == {{obj.nome}} %}
+            <li>{{ obj.nome }}</li>
+        {% endif %}
     {% endfor %}
 </ul>
