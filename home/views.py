@@ -19,9 +19,6 @@ def home(request):
     'home/index.html'
   )
 
-def cadastrar(request):
-  print('cadastro')
-  return HttpResponse('cadastrar')
 
 class AlunoListView(ListView):
   model = Aluno
