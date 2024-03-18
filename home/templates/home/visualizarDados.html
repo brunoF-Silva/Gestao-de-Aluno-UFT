@@ -1,0 +1,74 @@
+{% extends "global/base.html" %}
+{% block content %}
+
+{% comment %} <form action="% url 'visualizarDados' %" method="post">
+  {% csrf_token %}
+
+  <label for="curso">Curso:</label>
+  <select name="curso" id="curso">
+    {% for curso in cursos %}
+      <option value="{{ curso.nome }}">{{ curso.nome }}</option>
+    {% endfor %}
+  </select>
+
+  <label for="campus">Campus:</label>
+    <select name="campus" id="campus">
+      {% for curso in cursos %}
+        <option value="{{ curso.campus }}">{{ curso.campus }}</option>
+      {% endfor %}
+    </select>
+    
+  <label for="periodo">Período</label>
+    <input type="number" name="ano" id="ano">
+
+  <label for="semestre">/</label>
+    <select name="semestre" id="semestre">
+      <option disabled selected></option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+    </select>
+
+  <button type="submit" name="botao_filtrar" value="filtrado">Filtrar</button>
+</form> {% endcomment %}
+
+    <h2>Meu Formulário</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.curso.label }}
+        {{ form.curso }}
+        {{ form.campus.label }}
+        {{ form.campus }}
+        <button type="submit">Enviar</button>
+    </form>
+
+  <ul>
+    {% for aluno in alunos%}
+      <li>{{ aluno.nome}} {{aluno.curso}}
+    {% endfor %}
+  </ul>
+{% endblock  %}
+
+<ul></ul>
+
+<script>
+    $(document).ready(function() {
+        $('#id_classificacao').change(function() {
+            var classificacao = $(this).val();
+            $.ajax({
+                url: '{% url 'get_courses_by_classification' %}',
+                data: {'classificacao': classificacao},
+                dataType: 'json',
+                success: function(data) {
+                    $('#id_curso').empty();
+                    $.each(data.cursos, function(key, value) {
+                        $('#id_curso').append('<option value="' + value.id + '">' + value.nome + '</option>');
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+
+
+

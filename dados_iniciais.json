@@ -1,28 +1,24 @@
 [
   {
     "model": "home.campus",
-    "pk": 1,
     "fields": {
       "campus": "Palmas"
     }
   },
   {
     "model": "home.campus",
-    "pk": 2,
     "fields": {
       "campus": "Araguaína"
     }
   },
   {
     "model": "home.campus",
-    "pk": 3,
     "fields": {
       "campus": "Gurupi"
     }
   },
   {
     "model": "home.curso",
-    "pk": 1,
     "fields": {
       "nome": "Ciência da Computação",
       "classificacao": "Bacharelado",
@@ -33,7 +29,6 @@
   },
   {
     "model": "home.curso",
-    "pk": 2,
     "fields": {
       "nome": "Medicina",
       "classificacao": "Bacharelado",
@@ -44,7 +39,6 @@
   },
   {
     "model": "home.curso",
-    "pk": 3,
     "fields": {
       "nome": "Pedagogia",
       "classificacao": "Licenciatura",
@@ -55,13 +49,11 @@
   },
   {
     "model": "home.aluno",
-    "pk": 1,
     "fields": {
       "nome": "Marcos Nunes",
       "cpf": "420.575.860-06",
       "matricula": "202010001",
       "curso": 1,
-      "campus": 1,
       "data_de_nasc": "1990-01-01",
       "foto": "img/marcos.png",
       "situacao": "Formado",
@@ -72,13 +64,11 @@
   },
   {
     "model": "home.aluno",
-    "pk": 2,
     "fields": {
       "nome": "Sara Ferreira",
       "cpf": "464.405.670-71",
       "matricula": "202010002",
       "curso": 2,
-      "campus": 2,
       "data_de_nasc": "1995-02-02",
       "foto": "img/sara.png",
       "situacao": "Evadido",
@@ -89,13 +79,11 @@
   },
   {
     "model": "home.aluno",
-    "pk": 3,
     "fields": {
       "nome": "Arthur Mendes",
       "cpf": "613.849.270-69",
       "matricula": "202020001",
       "curso": 2,
-      "campus": 1,
       "data_de_nasc": "2000-03-03",
       "foto": "img/arthur.png",
       "situacao": "Vinculado",
@@ -106,13 +94,11 @@
   },
   {
     "model": "home.aluno",
-    "pk": 4,
     "fields": {
       "nome": "Renata Lopretty",
       "cpf": "205.325.100-03",
       "matricula": "201610001",
       "curso": 3,
-      "campus": 3,
       "data_de_nasc": "1993-04-04",
       "foto": "img/renata.png",
       "situacao": "Jubilado",
@@ -123,13 +109,11 @@
   },
   {
     "model": "home.aluno",
-    "pk": 5,
     "fields": {
       "nome": "Pedro Dias",
       "cpf": "186.907.360-69",
       "matricula": "202410001",
       "curso": 1,
-      "campus": 1,
       "data_de_nasc": "1992-05-05",
       "foto": "img/pedro.png",
       "situacao": "Vinculado",
