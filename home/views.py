@@ -37,9 +37,9 @@ class AlunoDetailView(DetailView):
 
    def get_context_data(self, **kwargs):
       pk = self.kwargs.get('pk')
-      aluno = Aluno.objects.get(id_aluno=pk)
+      aluno = Aluno.objects.get(id=pk)
       context = super().get_context_data(**kwargs)
-      context['curso'] = Curso.objects.get(id_curso=aluno.curso.id_curso)
+      context['curso'] = Curso.objects.get(id=aluno.curso.id)
       return context
    
     
@@ -52,7 +52,7 @@ class ListaAlunosMesmoCursoView(ListView):
 
     def get_queryset(self):
         # Obter o último aluno cadastrado
-        ultimo_aluno = Aluno.objects.latest('id_aluno')
+        ultimo_aluno = Aluno.objects.latest('id')
 
         # Filtrar todos os alunos no mesmo curso do último aluno cadastrado
         alunos_mesmo_curso = Aluno.objects.filter(curso=ultimo_aluno.curso)

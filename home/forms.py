@@ -6,8 +6,8 @@ from django.shortcuts import render
 
 
 class AlunoForm(forms.ModelForm):
-    data_de_nasc = forms.DateField(
-        label='Data de Nascimento',
+    dataDeNasc = forms.DateField(
+        label='Data de Nasccccccimento',
         widget=forms.DateInput(attrs={'type': 'date'}),
         input_formats=['%Y-%m-%d']
     )
