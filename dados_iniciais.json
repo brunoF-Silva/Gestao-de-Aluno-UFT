@@ -43,7 +43,7 @@
       "nome": "Pedagogia",
       "classificacao": "Licenciatura",
       "campus": 3,
-      "modalidade": "Ensino a distância",
+      "modalidade": "Presencial",
       "periodo": "Noturno"
     }
   },
@@ -54,12 +54,12 @@
       "cpf": "420.575.860-06",
       "matricula": "202010001",
       "curso": 1,
-      "data_de_nasc": "1990-01-01",
+      "dataDeNasc": "1990-01-01",
       "foto": "img/marcos.png",
       "situacao": "Formado",
-      "forma_de_ingresso": "ENEM",
+      "formaDeIngresso": "ENEM",
       "sexo": "M",
-      "raca": "Branco"
+      "raca": "Branca"
     }
   },
   {
@@ -69,12 +69,12 @@
       "cpf": "464.405.670-71",
       "matricula": "202010002",
       "curso": 2,
-      "data_de_nasc": "1995-02-02",
+      "dataDeNasc": "1995-02-02",
       "foto": "img/sara.png",
       "situacao": "Evadido",
-      "forma_de_ingresso": "Vestibular",
+      "formaDeIngresso": "Vestibular",
       "sexo": "F",
-      "raca": "Preto"
+      "raca": "Preta"
     }
   },
   {
@@ -84,12 +84,12 @@
       "cpf": "613.849.270-69",
       "matricula": "202020001",
       "curso": 2,
-      "data_de_nasc": "2000-03-03",
+      "dataDeNasc": "2000-03-03",
       "foto": "img/arthur.png",
       "situacao": "Vinculado",
-      "forma_de_ingresso": "ENEM",
+      "formaDeIngresso": "ENEM",
       "sexo": "M",
-      "raca": "Preto"
+      "raca": "Preta"
     }
   },
   {
@@ -99,12 +99,12 @@
       "cpf": "205.325.100-03",
       "matricula": "201610001",
       "curso": 3,
-      "data_de_nasc": "1993-04-04",
+      "dataDeNasc": "1993-04-04",
       "foto": "img/renata.png",
       "situacao": "Jubilado",
-      "forma_de_ingresso": "PSC",
+      "formaDeIngresso": "PSC",
       "sexo": "F",
-      "raca": "Branco"
+      "raca": "Branca"
     }
   },
   {
@@ -114,12 +114,12 @@
       "cpf": "186.907.360-69",
       "matricula": "202410001",
       "curso": 1,
-      "data_de_nasc": "1992-05-05",
+      "dataDeNasc": "1992-05-05",
       "foto": "img/pedro.png",
       "situacao": "Vinculado",
-      "forma_de_ingresso": "Vestibular",
+      "formaDeIngresso": "Vestibular",
       "sexo": "M",
-      "raca": "Pardo"
+      "raca": "Parda"
     }
   }
 ]
