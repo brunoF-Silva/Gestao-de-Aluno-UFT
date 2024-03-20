@@ -9,17 +9,17 @@ from django.db.models import Count
 
 
 
-from home.models import Aluno, Curso
+from home.models import Aluno, Curso, Campus
 from .forms import AlunoForm, FiltroForm
 
 # Create your views here.
 
-def home(request):
-  print('home')
-  return render(
-    request,
-    'home/index.html'
-  )
+# def home(request):
+#   print('home')
+#   return render(
+#     request,
+#     'home/index.html'
+#   )
 
 
 class AlunoListView(ListView):
@@ -43,8 +43,6 @@ class AlunoDetailView(DetailView):
       return context
    
     
-class IndexView(TemplateView):
-    template_name = 'index.html'
 
 class ListaAlunosMesmoCursoView(ListView):
     template_name = 'home/alunos_mesmo_curso.html'
@@ -74,6 +72,46 @@ class VisualizarDadosView(ListView, FormView):
         queryset = super().get_queryset()
         form = self.form_class(self.request.POST or None)
         if form.is_valid():
+            modalidadeSelecionada = form.cleaned_data['curso']
+            cursoSelecionado = form.cleaned_data['curso']
+            campusSelecionado = form.cleaned_data['campus']
+            ano = form.cleaned_data['ano']
+            semestreSelecionado = form.cleaned_data['semestre']
+            classificacaoSelecionada = form.cleaned_data['classificacao']
+
+
+            if campusSelecionado:
+                cursos = Curso.objects.all()
+                cursos = cursos.filter(campus__campus=campusSelecionado)
+                print(cursos[0])
+
+                print(type(cursos))
+                for curso in cursos:
+                    print(f'CUA {curso}')
+                queryset = Aluno.objects.filter(curso__in=cursos)
+                print(queryset)
+        return queryset
+
+    def post(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        context = self.get_context_data(object_list=self.object_list)
+        return self.render_to_response(context)
+
+class IndexView(TemplateView):
+    model = Aluno
+    template_name = 'home/index.html'
+    context_object_name = 'alunos'
+    form_class = FiltroForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_alunos_vinculados'] = Aluno.objects.filter(situacao='Vinculado').count()
+        return context
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        form = self.form_class(self.request.POST or None)
+        if form.is_valid():
             curso_selecionado = form.cleaned_data['curso']
             campus_selecionado = form.cleaned_data['campus']
             if curso_selecionado and campus_selecionado:
@@ -92,16 +130,16 @@ class AlunoCreateView(CreateView):
     success_url = reverse_lazy('alunos-mesmo-curso')
 
     def form_valid(self, form):
-        # Gerar matrícula automaticamente
-        now = datetime.now()
-        year = now.year
-        half_year = 1 if now.month <= 6 else 2
-        alunos_no_ano = Aluno.objects.filter(matricula__startswith=str(year)).count()
-        incremental_digit = str(alunos_no_ano + 1).zfill(4)
-        matricula = f'{year}{half_year}{incremental_digit}'
+        hoje = datetime.now()
+        ano = hoje.year
+        semestre = 1 if hoje.month <= 6 else 2
+        alunos_no_ano = Aluno.objects.filter(matricula__startswith=str(f'{ano}{semestre}')).count()
+        incremental = str(alunos_no_ano + 1).zfill(4)
+        matricula = f'{ano}{semestre}{incremental}'
 
-        # Adicionar matrícula ao formulário
         form.instance.matricula = matricula
+
+        form.instance.situacao = 'Vinculado'
 
         return super().form_valid(form)
 
@@ -111,7 +149,6 @@ class MethodsView(ListView):
     context_object_name = 'alunos'
 
     def get_queryset(self):
-        # Retorna apenas os alunos do curso de "Engenharia"
         return Aluno.objects.values('curso')
     
 """

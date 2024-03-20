@@ -41,8 +41,13 @@ from django import forms
 from .models import Curso
 
 class FiltroForm(forms.Form):
-    # classificacao = forms.ChoiceField(label="Classificação do Curso: ", choices=(('', '-----'), ('Bacharelado', 'Bacharelado'), ('Tecnologo', 'Tecnólogo'), ('Licenciatura', 'Licenciatura')), required=False)
+    ANO_CHOICES = [(str(i), str(i)) for i in range(1900, 2101)]  # Lista de anos de 1900 a 2100
+    semestre = forms.ChoiceField(label="Semestre:", choices=[('', '---'),('1', '1'), ('2', '2')], required=False)
     curso = forms.ModelChoiceField(label="Curso: ", queryset=Curso.objects.all(), required=False)
     campus = forms.ModelChoiceField(label="Campus: ", queryset=Campus.objects.all(), required=False)
+    ano = forms.CharField(label="Ano: ", max_length=4, min_length=4, widget=forms.TextInput(attrs={'maxlength': '4'}), required=False)
+    classificacao = forms.ChoiceField(label="Classificação:", choices=[('', '---------'), ('Bacharelado', 'Bacharelado'), ('Licenciatura', 'Licenciatura'), ('Tecnólogo', 'Tecnólogo')], required=False)
+    modalidade = forms.ChoiceField(label="Modalidade", choices=[('', '------'), ('Presencial', 'Presencial'), ('Ensino a distância', 'Ensino a distância')], required=False)
+
 
 

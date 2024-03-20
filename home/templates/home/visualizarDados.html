@@ -34,10 +34,18 @@
     <h2>Meu Formulário</h2>
     <form method="post">
         {% csrf_token %}
+        {{ form.modalidade.label }}
+        {{ form.modalidade}}
         {{ form.curso.label }}
         {{ form.curso }}
         {{ form.campus.label }}
         {{ form.campus }}
+        {{ form.ano.label }}
+        {{ form.ano }}
+        {{ form.semestre.label }}
+        {{ form.semestre }}
+        {{ form.classificacao.label }}
+        {{ form.classificacao }}
         <button type="submit">Enviar</button>
     </form>
 
