@@ -73,28 +73,51 @@ class VisualizarDadosView(ListView, FormView):
         form = self.form_class(self.request.POST or None)
         if form.is_valid():
             modalidadeSelecionada = form.cleaned_data['curso']
-            cursoSelecionado = form.cleaned_data['curso']
-            campusSelecionado = form.cleaned_data['campus']
-            ano = form.cleaned_data['ano']
             semestreSelecionado = form.cleaned_data['semestre']
             classificacaoSelecionada = form.cleaned_data['classificacao']
+            ano = form.cleaned_data['ano']
 
-            if campusSelecionado and cursoSelecionado is None:
-                queryset = Aluno.objects.filter(curso=cursoSelecionado)
-            elif campusSelecionado:
-                cursos = Curso.objects.all()
-                cursos = cursos.filter(campus__campus=campusSelecionado)
+            cursoSelecionado = form.cleaned_data['curso']
+            campusSelecionado = form.cleaned_data['campus']
+            print(cursoSelecionado)
+            print(campusSelecionado)
+
+            if cursoSelecionado is '':
+                cursoSelecionado = None
+
+
+            ids = []
+            if cursoSelecionado and campusSelecionado is None:
+                print('Entrou 1')
+                ids =  Curso.objects.filter(nome__icontains = cursoSelecionado).values('id')
+                ids = [e['id'] for e in ids]
+                print(ids)
+                queryset = Aluno.objects.filter(curso_id__in=ids)
+
+            if cursoSelecionado is None:
+                print('Entrou 2')
+                print(campusSelecionado)
+
+                # cursos = Curso.objects.all()
+                # cursos = cursos.filter(campus__campus=campusSelecionado)
+                ids = Campus.objects.filter(campus__icontains = campusSelecionado).values('id')
+                print(ids)
+                
+                ids = [e['id'] for e in ids]
+
+                print(ids)
+                cursos = Curso.objects.filter(campus__in = ids)
+                print(cursos)
                 queryset = Aluno.objects.filter(curso__in=cursos)
             elif campusSelecionado and cursoSelecionado:
-                cursos =  Curso.object.all()
-                cursos = cursos.filter(campus__campus=campusSelecionado)
-                
-                cursoFinal = ''
-                for curso in curso:
-                    if curso == cursoSelecionado:
-                        print(curso)
-                        cursoFinal = curso
-                queryset = Aluno.objects.filter(curso=cursoFinal)
+                print('Entrou 3')
+
+                cursos =  Curso.objects.filter(nome__icontains = cursoSelecionado)
+                ids = Campus.objects.filter(campus__icontains = campusSelecionado).values('id')
+                ids = [e['id'] for e in ids]
+
+                cursos = cursos.filter(campus__in = ids)
+                queryset =  Aluno.objects.filter(curso__in = cursos)
         return queryset
 
     def post(self, request, *args, **kwargs):

@@ -34,24 +34,24 @@
     <h2>Meu Formulário</h2>
     <form method="post">
         {% csrf_token %}
-        {{ form.modalidade.label }}
-        {{ form.modalidade}}
+        {% comment %} {{ form.modalidade.label }} {% endcomment %}
+        {% comment %} {{ form.modalidade}} {% endcomment %}
         {{ form.curso.label }}
         {{ form.curso }}
         {{ form.campus.label }}
         {{ form.campus }}
-        {{ form.ano.label }}
-        {{ form.ano }}
-        {{ form.semestre.label }}
-        {{ form.semestre }}
-        {{ form.classificacao.label }}
-        {{ form.classificacao }}
-        <button type="submit">Enviar</button>
+        {% comment %} {{ form.ano.label }} {% endcomment %}
+        {% comment %} {{ form.ano }} {% endcomment %}
+        {% comment %} {{ form.semestre.label }} {% endcomment %}
+        {% comment %} {{ form.semestre }} {% endcomment %}
+        {% comment %} {{ form.classificacao.label }} {% endcomment %}
+        {% comment %} {{ form.classificacao }} {% endcomment %}
+        <button type="submit">Filtrar</button>
     </form>
 
   <ul>
     {% for aluno in alunos%}
-      <li>{{ aluno.nome}} {{aluno.curso}}
+      <li>{{ aluno.nome}} {{aluno.curso}} {{aluno.curso__campus}}</li>
     {% endfor %}
   </ul>
 {% endblock  %}
