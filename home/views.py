@@ -79,17 +79,22 @@ class VisualizarDadosView(ListView, FormView):
             semestreSelecionado = form.cleaned_data['semestre']
             classificacaoSelecionada = form.cleaned_data['classificacao']
 
-
-            if campusSelecionado:
+            if campusSelecionado and cursoSelecionado is None:
+                queryset = Aluno.objects.filter(curso=cursoSelecionado)
+            elif campusSelecionado:
                 cursos = Curso.objects.all()
                 cursos = cursos.filter(campus__campus=campusSelecionado)
-                print(cursos[0])
-
-                print(type(cursos))
-                for curso in cursos:
-                    print(f'CUA {curso}')
                 queryset = Aluno.objects.filter(curso__in=cursos)
-                print(queryset)
+            elif campusSelecionado and cursoSelecionado:
+                cursos =  Curso.object.all()
+                cursos = cursos.filter(campus__campus=campusSelecionado)
+                
+                cursoFinal = ''
+                for curso in curso:
+                    if curso == cursoSelecionado:
+                        print(curso)
+                        cursoFinal = curso
+                queryset = Aluno.objects.filter(curso=cursoFinal)
         return queryset
 
     def post(self, request, *args, **kwargs):
