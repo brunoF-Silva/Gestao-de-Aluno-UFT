@@ -34,6 +34,10 @@ class AboutView(TemplateView):
 
 class AlunoDetailView(DetailView):
    model = Aluno
+   template_name = "home/perfil.html"
+   context_object_name = 'alunos'
+   form_class = AlunoForm
+
 
    def get_context_data(self, **kwargs):
       pk = self.kwargs.get('pk')
@@ -75,7 +79,7 @@ class VisualizarDadosView(ListView, FormView):
             modalidadeSelecionada = form.cleaned_data['curso']
             semestreSelecionado = form.cleaned_data['semestre']
             classificacaoSelecionada = form.cleaned_data['classificacao']
-            ano = form.cleaned_data['ano']
+            pesquisa = form.cleaned_data['pesquisa']
 
             cursoSelecionado = form.cleaned_data['curso']
             campusSelecionado = form.cleaned_data['campus']
@@ -87,6 +91,7 @@ class VisualizarDadosView(ListView, FormView):
 
 
             ids = []
+            queryset = []
             if cursoSelecionado and campusSelecionado is None:
                 print('Entrou 1')
                 ids =  Curso.objects.filter(nome__icontains = cursoSelecionado).values('id')
@@ -94,7 +99,7 @@ class VisualizarDadosView(ListView, FormView):
                 print(ids)
                 queryset = Aluno.objects.filter(curso_id__in=ids)
 
-            if cursoSelecionado is None:
+            elif cursoSelecionado is None and campusSelecionado:
                 print('Entrou 2')
                 print(campusSelecionado)
 
@@ -118,6 +123,9 @@ class VisualizarDadosView(ListView, FormView):
 
                 cursos = cursos.filter(campus__in = ids)
                 queryset =  Aluno.objects.filter(curso__in = cursos)
+                
+            elif campusSelecionado is None and cursoSelecionado is None:
+                print("NOOOOOOOONNNNNNEEEE")
         return queryset
 
     def post(self, request, *args, **kwargs):
@@ -152,10 +160,10 @@ class IndexView(TemplateView):
         return self.render_to_response(context)
 
 class AlunoCreateView(CreateView):
-    model = Aluno
     form_class = AlunoForm
     template_name = 'home/cadastro.html'
     success_url = reverse_lazy('alunos-mesmo-curso')
+    model = Aluno
 
     def form_valid(self, form):
         hoje = datetime.now()

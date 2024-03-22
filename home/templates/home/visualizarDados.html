@@ -1,82 +1,30 @@
 {% extends "global/base.html" %}
 {% block content %}
 
-{% comment %} <form action="% url 'visualizarDados' %" method="post">
-  {% csrf_token %}
-
-  <label for="curso">Curso:</label>
-  <select name="curso" id="curso">
-    {% for curso in cursos %}
-      <option value="{{ curso.nome }}">{{ curso.nome }}</option>
-    {% endfor %}
-  </select>
-
-  <label for="campus">Campus:</label>
-    <select name="campus" id="campus">
-      {% for curso in cursos %}
-        <option value="{{ curso.campus }}">{{ curso.campus }}</option>
-      {% endfor %}
-    </select>
-    
-  <label for="periodo">Período</label>
-    <input type="number" name="ano" id="ano">
-
-  <label for="semestre">/</label>
-    <select name="semestre" id="semestre">
-      <option disabled selected></option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-    </select>
-
-  <button type="submit" name="botao_filtrar" value="filtrado">Filtrar</button>
-</form> {% endcomment %}
-
     <h2>Meu Formulário</h2>
     <form method="post">
         {% csrf_token %}
-        {% comment %} {{ form.modalidade.label }} {% endcomment %}
-        {% comment %} {{ form.modalidade}} {% endcomment %}
         {{ form.curso.label }}
         {{ form.curso }}
         {{ form.campus.label }}
         {{ form.campus }}
-        {% comment %} {{ form.ano.label }} {% endcomment %}
-        {% comment %} {{ form.ano }} {% endcomment %}
-        {% comment %} {{ form.semestre.label }} {% endcomment %}
-        {% comment %} {{ form.semestre }} {% endcomment %}
-        {% comment %} {{ form.classificacao.label }} {% endcomment %}
-        {% comment %} {{ form.classificacao }} {% endcomment %}
+        {{ form.pesquisa.label }}
+        {{ form.pesquisa}}
         <button type="submit">Filtrar</button>
     </form>
 
-  <ul>
-    {% for aluno in alunos%}
-      <li>{{ aluno.nome}} {{aluno.curso}} {{aluno.curso__campus}}</li>
-    {% endfor %}
-  </ul>
+  {% if form.is_bound and form.is_valid %}
+    <ul>
+      {% for aluno in alunos%}
+        <li>{{ aluno.nome}} {{aluno.cpf}} {{ aluno.curso }}{{aluno.curso__campus__campus}} {{aluno.situcao}}         <a href="perfil/{{ aluno.id }}" class="btn btn-primary">
+          <i class="fa fa-edit"></i>
+        </a>
+        <a href="" class="btn btn-danger">
+          <i class="fa fa-trash"></i>
+        </a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
 {% endblock  %}
-
-<ul></ul>
-
-<script>
-    $(document).ready(function() {
-        $('#id_classificacao').change(function() {
-            var classificacao = $(this).val();
-            $.ajax({
-                url: '{% url 'get_courses_by_classification' %}',
-                data: {'classificacao': classificacao},
-                dataType: 'json',
-                success: function(data) {
-                    $('#id_curso').empty();
-                    $.each(data.cursos, function(key, value) {
-                        $('#id_curso').append('<option value="' + value.id + '">' + value.nome + '</option>');
-                    });
-                }
-            });
-        });
-    });
-</script>
-
-
-
 

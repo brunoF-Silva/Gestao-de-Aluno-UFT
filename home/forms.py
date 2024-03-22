@@ -47,9 +47,13 @@ class FiltroForm(forms.Form):
     curso = forms.ChoiceField(label="Curso:", choices=[('', '-----------'), ('Ciência da Computação', 'Ciência da Computação'), ('Medicina', 'Medicina'), ('Pedagogia', 'Pedagogia'), ('Teatro', 'Teatro')], required=False)
 
     campus = forms.ModelChoiceField(label="Campus: ", queryset=Campus.objects.all(), required=False)
-    ano = forms.CharField(label="Ano: ", max_length=4, min_length=4, widget=forms.TextInput(attrs={'maxlength': '4'}), required=False)
+    pesquisa = forms.CharField(label="Nome,matrícula ou CPF: ", max_length=50, min_length=50, widget=forms.TextInput(attrs={'maxlength': '50'}), required=False)
     classificacao = forms.ChoiceField(label="Classificação:", choices=[('', '---------'), ('Bacharelado', 'Bacharelado'), ('Licenciatura', 'Licenciatura'), ('Tecnólogo', 'Tecnólogo')], required=False)
     modalidade = forms.ChoiceField(label="Modalidade", choices=[('', '------'), ('Presencial', 'Presencial'), ('Ensino a distância', 'Ensino a distância')], required=False)
 
 
 
+# class AlunoForm(forms.ModelForm):
+#     class Meta:
+#         model = Aluno
+#         fields = ['nome', 'cpf', 'curso', 'dataDeNasc', 'foto', 'situacao', 'formaDeIngresso', 'sexo', 'raca']
