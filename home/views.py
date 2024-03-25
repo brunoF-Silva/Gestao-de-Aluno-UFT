@@ -9,6 +9,9 @@ from home.models import Aluno, Curso, Campus
 from .forms import AlunoForm, FiltroForm, editarAlunoForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.shortcuts import render
+from django.http import HttpResponse
+
 
 
 
@@ -20,7 +23,20 @@ class IndexView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['total_alunos_vinculados'] = Aluno.objects.filter(situacao='Vinculado').count()
+        alunosVinculados = Aluno.objects.filter(situacao='Vinculado')
+        alunosFormados = Aluno.objects.filter(situacao='Formado')
+        alunosJubilados = Aluno.objects.filter(situacao='Jubilado')
+        alunosEvadidos = Aluno.objects.filter(situacao='Evadido')
+
+        context = {
+            'totalAlunosVinculados': alunosVinculados.count(),
+            'totalAlunosFormados': alunosFormados.count(),
+            'totalAlunosJubilados': alunosJubilados.count(),
+            'totalAlunosEvadidos': alunosEvadidos.count()
+        }
+
+        context ['']
+
         return context
     
     def get_queryset(self):
@@ -43,6 +59,7 @@ class AlunoCreateView(CreateView):
     template_name = 'home/cadastro.html'
     success_url = reverse_lazy('alunos-mesmo-curso')
     model = Aluno
+    formulario_enviado = False
 
     def form_valid(self, form):
         hoje = datetime.now()
@@ -55,8 +72,17 @@ class AlunoCreateView(CreateView):
         form.instance.matricula = matricula
 
         form.instance.situacao = 'Vinculado'
-
         return super().form_valid(form)
+    
+def mostraPopUp(request):
+    formulario_enviado = False
+    if request.method == 'POST':
+        # Processamento do formulário aqui
+        # ...
+        formulario_enviado = True  # Atualiza a variável para True após o envio do formulário
+    
+    return render(request, 'meu_template.html', {'formulario_enviado': formulario_enviado})
+
     
 
 class AlunoDetailView(DetailView):
