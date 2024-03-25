@@ -2,9 +2,10 @@
 {% block content %}
 
 <div class="container">
-    <h2 class="mt-4 mb-4">Visualizar Aluno</h2>
+    <h2 class="mt-4 mb-4">Meu Formulário</h2>
     
-<form method="get" class="row align-items-end">
+<form method="post" class="row align-items-end">
+    {% csrf_token %}
     <div class="col-md-4">
         <label for="curso" class="form-label">{{ form.curso.label }}</label>
         {{ form.curso }}
@@ -23,7 +24,7 @@
 </form>
 
 
-    {% comment %} {% if form.is_bound and form.is_valid %} {% endcomment %}
+    {% if form.is_bound and form.is_valid %}
     <div class="table-responsive mt-4">
         <table class="table table-bordered table-hover">
             <thead class="table-dark">
@@ -60,7 +61,7 @@
             </tbody>
         </table>
     </div>
-    {% comment %} {% endif %} {% endcomment %}
+    {% endif %}
 </div>
 
 {% endblock %}

@@ -5,133 +5,12 @@ from django.views.generic import TemplateView, DetailView, CreateView, TemplateV
 from django.urls import reverse_lazy
 from datetime import datetime
 from django.db.models import Count
-
-
-
-
 from home.models import Aluno, Curso, Campus
-from .forms import AlunoForm, FiltroForm
-
-# Create your views here.
-
-# def home(request):
-#   print('home')
-#   return render(
-#     request,
-#     'home/index.html'
-#   )
+from .forms import AlunoForm, FiltroForm, editarAlunoForm
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 
-class AlunoListView(ListView):
-  model = Aluno
-  template_name = "home/teste.html"
-  def get_context_data(self, **kwargs):
-      context = super().get_context_data(**kwargs)
-      context['curso'] = Curso.objects.all()
-
-class AboutView(TemplateView):
-    template_name = "about.html"
-
-class AlunoDetailView(DetailView):
-   model = Aluno
-   template_name = "home/perfil.html"
-   context_object_name = 'alunos'
-   form_class = AlunoForm
-
-
-   def get_context_data(self, **kwargs):
-      pk = self.kwargs.get('pk')
-      aluno = Aluno.objects.get(id=pk)
-      context = super().get_context_data(**kwargs)
-      context['curso'] = Curso.objects.get(id=aluno.curso.id)
-      return context
-   
-    
-
-class ListaAlunosMesmoCursoView(ListView):
-    template_name = 'home/alunos_mesmo_curso.html'
-    context_object_name = 'alunos'
-
-    def get_queryset(self):
-        # Obter o último aluno cadastrado
-        ultimo_aluno = Aluno.objects.latest('id')
-
-        # Filtrar todos os alunos no mesmo curso do último aluno cadastrado
-        alunos_mesmo_curso = Aluno.objects.filter(curso=ultimo_aluno.curso)
-
-        return alunos_mesmo_curso
-    
-class VisualizarDadosView(ListView, FormView):
-    template_name='home/visualizarDados.html'
-    model =  Aluno
-    context_object_name = 'alunos'
-    form_class = FiltroForm
-    
-    def get_context_data(self, **kwargs):
-      context = super().get_context_data(**kwargs)
-      context["cursos"] = Curso.objects.all()
-      return context
-    
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        form = self.form_class(self.request.POST or None)
-        if form.is_valid():
-            modalidadeSelecionada = form.cleaned_data['curso']
-            semestreSelecionado = form.cleaned_data['semestre']
-            classificacaoSelecionada = form.cleaned_data['classificacao']
-            pesquisa = form.cleaned_data['pesquisa']
-
-            cursoSelecionado = form.cleaned_data['curso']
-            campusSelecionado = form.cleaned_data['campus']
-            print(cursoSelecionado)
-            print(campusSelecionado)
-
-            if cursoSelecionado is '':
-                cursoSelecionado = None
-
-
-            ids = []
-            queryset = []
-            if cursoSelecionado and campusSelecionado is None:
-                print('Entrou 1')
-                ids =  Curso.objects.filter(nome__icontains = cursoSelecionado).values('id')
-                ids = [e['id'] for e in ids]
-                print(ids)
-                queryset = Aluno.objects.filter(curso_id__in=ids)
-
-            elif cursoSelecionado is None and campusSelecionado:
-                print('Entrou 2')
-                print(campusSelecionado)
-
-                # cursos = Curso.objects.all()
-                # cursos = cursos.filter(campus__campus=campusSelecionado)
-                ids = Campus.objects.filter(campus__icontains = campusSelecionado).values('id')
-                print(ids)
-                
-                ids = [e['id'] for e in ids]
-
-                print(ids)
-                cursos = Curso.objects.filter(campus__in = ids)
-                print(cursos)
-                queryset = Aluno.objects.filter(curso__in=cursos)
-            elif campusSelecionado and cursoSelecionado:
-                print('Entrou 3')
-
-                cursos =  Curso.objects.filter(nome__icontains = cursoSelecionado)
-                ids = Campus.objects.filter(campus__icontains = campusSelecionado).values('id')
-                ids = [e['id'] for e in ids]
-
-                cursos = cursos.filter(campus__in = ids)
-                queryset =  Aluno.objects.filter(curso__in = cursos)
-                
-            elif campusSelecionado is None and cursoSelecionado is None:
-                print("NOOOOOOOONNNNNNEEEE")
-        return queryset
-
-    def post(self, request, *args, **kwargs):
-        self.object_list = self.get_queryset()
-        context = self.get_context_data(object_list=self.object_list)
-        return self.render_to_response(context)
 
 class IndexView(TemplateView):
     model = Aluno
@@ -178,74 +57,199 @@ class AlunoCreateView(CreateView):
         form.instance.situacao = 'Vinculado'
 
         return super().form_valid(form)
+    
 
-class MethodsView(ListView):
+class AlunoDetailView(DetailView):
+   model = Aluno
+   template_name = "home/perfil.html"
+   context_object_name = 'aluno'
+   form_class = AlunoForm
+
+
+   def get_context_data(self, **kwargs):
+      pk = self.kwargs.get('pk')
+      aluno = Aluno.objects.get(id=pk)
+      context = super().get_context_data(**kwargs)
+      context['cursos'] = Curso.objects.all()
+      return context
+      
+class editarAlunoView(DetailView):
     model = Aluno
-    template_name = 'home/methodTest.html'
+    template_name = "home/editarPerfil.html"
+    context_object_name = 'aluno'
+    form_class = editarAlunoForm
+
+
+    def get_context_data(self, **kwargs):
+        pk = self.kwargs.get('pk')
+        aluno = Aluno.objects.get(id=pk)
+        context = super().get_context_data(**kwargs)
+        context['cursos'] = Curso.objects.all()
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        aluno = self.get_object()
+        print(aluno)
+        form = self.form_class(request.POST, request.FILES, instance=aluno)
+        print(form)
+        print(form.is_valid())
+        if form.is_valid():
+            print('UUEEEE')
+            form.save()
+            return HttpResponseRedirect(reverse('editar-perfil-aluno', kwargs={'pk': aluno.pk}))
+        return super().get(request, *args, **kwargs)   
+
+class ListaAlunosMesmoCursoView(ListView):
+    template_name = 'home/alunos_mesmo_curso.html'
     context_object_name = 'alunos'
 
     def get_queryset(self):
-        return Aluno.objects.values('curso')
+        # Obter o último aluno cadastrado
+        ultimo_aluno = Aluno.objects.latest('id')
+
+        # Filtrar todos os alunos no mesmo curso do último aluno cadastrado
+        alunos_mesmo_curso = Aluno.objects.filter(curso=ultimo_aluno.curso)
+
+        return alunos_mesmo_curso
     
-"""
-from .models import Aluno
+# class VisualizarDadosView(ListView, FormView):
+#     template_name='home/visualizarDados.html'
+#     model =  Aluno
+#     context_object_name = 'alunos'
+#     form_class = FiltroForm
+    
+#     def get_context_data(self, **kwargs):
+#       context = super().get_context_data(**kwargs)
+#       context["cursos"] = Curso.objects.all()
+#       return context
+    
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+#         form = self.form_class(self.request.POST or None)
+#         if form.is_valid():
 
-# Retorna todos os objetos do modelo Aluno
-alunos = Aluno.objects.all()
 
-from .models import Aluno
+#             cursoSelecionado = form.cleaned_data['curso']
+#             campusSelecionado = form.cleaned_data['campus']
+#             pesquisa = form.cleaned_data['pesquisa']
+            
+#             print(cursoSelecionado)
+#             print(campusSelecionado)
 
-# Retorna um único objeto que atende aos critérios especificados
-aluno = Aluno.objects.get(id=1)  # Obtém o aluno com ID igual a 1
+#             if cursoSelecionado is '':
+#                 cursoSelecionado = None
+                
+#             if pesquisa:
+#                 queryset = Aluno.objects.filter(matricula = pesquisa)
+#             else:
+#                 ids = []
+#                 queryset = []
+#                 if cursoSelecionado and campusSelecionado is None:
+#                     print('Entrou 1')
+#                     ids =  Curso.objects.filter(nome__icontains = cursoSelecionado).values('id')
+#                     ids = [e['id'] for e in ids]
+#                     print(ids)
+#                     queryset = Aluno.objects.filter(curso_id__in=ids)
 
-from .models import Aluno
+#                 elif cursoSelecionado is None and campusSelecionado:
+#                     print('Entrou 2')
+#                     print(campusSelecionado)
 
-# Retorna um queryset contendo todos os objetos que atendem aos critérios especificados
-alunos = Aluno.objects.filter(curso='Engenharia')  # Obtém todos os alunos do curso de Engenharia
+#                     # cursos = Curso.objects.all()
+#                     # cursos = cursos.filter(campus__campus=campusSelecionado)
+#                     ids = Campus.objects.filter(campus__icontains = campusSelecionado).values('id')
+#                     print(ids)
+                    
+#                     ids = [e['id'] for e in ids]
 
-from .models import Aluno
+#                     print(ids)
+#                     cursos = Curso.objects.filter(campus__in = ids)
+#                     print(cursos)
+#                     queryset = Aluno.objects.filter(curso__in=cursos)
+#                 elif campusSelecionado and cursoSelecionado:
+#                     print('Entrou 3')
 
-# Retorna um queryset contendo todos os objetos que não atendem aos critérios especificados
-alunos = Aluno.objects.exclude(curso='Engenharia')  # Obtém todos os alunos que não são do curso de Engenharia
+#                     cursos =  Curso.objects.filter(nome__icontains = cursoSelecionado)
+#                     ids = Campus.objects.filter(campus__icontains = campusSelecionado).values('id')
+#                     ids = [e['id'] for e in ids]
 
-from .models import Aluno
+#                     cursos = cursos.filter(campus__in = ids)
+#                     queryset =  Aluno.objects.filter(curso__in = cursos)
+                    
+#                 elif campusSelecionado is None and cursoSelecionado is None:
+#                     print("NOOOOOOOONNNNNNEEEE")
+#         return queryset
 
-# Ordena os resultados do queryset com base nos critérios especificados
-alunos = Aluno.objects.all().order_by('nome')  # Obtém todos os alunos ordenados pelo nome
+class VisualizarDadosView(ListView, FormView):
+    template_name='home/visualizarDados.html'
+    model =  Aluno
+    context_object_name = 'alunos'
+    form_class = FiltroForm
+    
+    def get_context_data(self, **kwargs):
+      context = super().get_context_data(**kwargs)
+      context["cursos"] = Curso.objects.all()
+      return context
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        form = self.form_class(self.request.GET or None)  # Usando GET para obter os parâmetros do formulário
+        if form.is_valid():
+            cursoSelecionado = form.cleaned_data['curso']
+            campusSelecionado = form.cleaned_data['campus']
+            pesquisa = form.cleaned_data['pesquisa']
+            
 
-from django.db.models import Count
-from .models import Aluno
+            if cursoSelecionado is '':
+                cursoSelecionado = None
+                
+            print(cursoSelecionado)
+            print(campusSelecionado)
+            if pesquisa:
+                queryset = Aluno.objects.filter(matricula = pesquisa)
+            else:
+                ids = []
+                queryset = []
+                if cursoSelecionado and campusSelecionado is None:
+                    print('Entrou 1')
+                    ids =  Curso.objects.filter(nome__icontains = cursoSelecionado).values('id')
+                    ids = [e['id'] for e in ids]
+                    print(ids)
+                    queryset = Aluno.objects.filter(curso_id__in=ids)
 
-# Adiciona contagem de alunos por curso ao queryset
-alunos_por_curso = Aluno.objects.values('curso').annotate(total=Count('curso'))
+                elif cursoSelecionado is None and campusSelecionado:
+                    print('Entrou 2')
+                    print(campusSelecionado)
 
-from .models import Aluno
+                    # cursos = Curso.objects.all()
+                    # cursos = cursos.filter(campus__campus=campusSelecionado)
+                    ids = Campus.objects.filter(campus__icontains = campusSelecionado).values('id')
+                    print(ids)
+                    
+                    ids = [e['id'] for e in ids]
 
-# Retorna um queryset contendo dicionários em vez de objetos completos
-dados_alunos = Aluno.objects.values('nome', 'curso')  # Obtém apenas os nomes e cursos dos alunos
+                    print(ids)
+                    cursos = Curso.objects.filter(campus__in = ids)
+                    print(cursos)
+                    queryset = Aluno.objects.filter(curso__in=cursos)
+                elif campusSelecionado and cursoSelecionado:
+                    print('Entrou 3')
 
-from .models import Aluno
+                    cursos =  Curso.objects.filter(nome__icontains = cursoSelecionado)
+                    ids = Campus.objects.filter(campus__icontains = campusSelecionado).values('id')
+                    ids = [e['id'] for e in ids]
+                    
+                    print(ids)
 
-# Remove duplicatas do queryset resultante
-alunos_distintos = Aluno.objects.values('curso').distinct()  # Obtém os cursos distintos dos alunos
+                    cursos = cursos.filter(campus__in = ids)
+                    queryset =  Aluno.objects.filter(curso__in = cursos)
+                    
+                elif campusSelecionado is None and cursoSelecionado is None:
+                    print("NOOOOOOOONNNNNNEEEE")
+        print(queryset)
+        return queryset
 
-from .models import Aluno
-
-# Retorna o número de objetos no queryset
-total_alunos = Aluno.objects.count()  # Obtém o número total de alunos
-
-from .models import Aluno
-
-# Retorna True se pelo menos um objeto atender aos critérios especificados no queryset
-aluno_existe = Aluno.objects.filter(curso='Medicina').exists()  # Verifica se há alunos no curso de Medicina
-
-from .models import Aluno
-
-# Cria um novo objeto do modelo e o salva no banco de dados
-novo_aluno = Aluno.objects.create(nome='João', curso='Engenharia')  # Cria um novo aluno
-
-from .models import Aluno
-
-# Atualiza os valores de um ou mais objetos do queryset
-Aluno.objects.filter(curso='Engenharia').update(curso='Física')  # Atualiza o curso de todos os alunos de Engenharia para Física
-"""
+    def post(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        context = self.get_context_data(object_list=self.object_list)
+        return self.render_to_response(context)

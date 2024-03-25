@@ -16,6 +16,13 @@ class AlunoForm(forms.ModelForm):
         model = Aluno
         exclude = ['situacao', 'matricula']
 
+class editarAlunoForm(forms.ModelForm):
+    class Meta:
+        model = Aluno
+        # fields = '__all__'
+        exclude = ['id','matricula','foto', 'dataDeNasc', 'cpf', 'formaDeIngresso']
+
+
 # class FiltroForm(forms.Form):
 #     your_name = forms.CharField(label="Your name", max_length=100)
 #     from django import forms
@@ -41,15 +48,9 @@ from django import forms
 from .models import Curso
 
 class FiltroForm(forms.Form):
-    ANO_CHOICES = [(str(i), str(i)) for i in range(1900, 2101)]  # Lista de anos de 1900 a 2100
-    semestre = forms.ChoiceField(label="Semestre:", choices=[('', '---'),('1', '1'), ('2', '2')], required=False)
-    # curso = forms.ModelChoiceField(label="Curso: ", queryset=Curso.objects.all(), required=False)
-    curso = forms.ChoiceField(label="Curso:", choices=[('', '-----------'), ('Ciência da Computação', 'Ciência da Computação'), ('Medicina', 'Medicina'), ('Pedagogia', 'Pedagogia'), ('Teatro', 'Teatro')], required=False)
-
-    campus = forms.ModelChoiceField(label="Campus: ", queryset=Campus.objects.all(), required=False)
-    pesquisa = forms.CharField(label="Nome,matrícula ou CPF: ", max_length=50, min_length=50, widget=forms.TextInput(attrs={'maxlength': '50'}), required=False)
-    classificacao = forms.ChoiceField(label="Classificação:", choices=[('', '---------'), ('Bacharelado', 'Bacharelado'), ('Licenciatura', 'Licenciatura'), ('Tecnólogo', 'Tecnólogo')], required=False)
-    modalidade = forms.ChoiceField(label="Modalidade", choices=[('', '------'), ('Presencial', 'Presencial'), ('Ensino a distância', 'Ensino a distância')], required=False)
+    curso = forms.ChoiceField(label="Curso:", choices=[('', '-----------'), ('Ciência da Computação', 'Ciência da Computação'), ('Medicina', 'Medicina'), ('Pedagogia', 'Pedagogia'), ('Teatro', 'Teatro')], required=False, widget=forms.Select(attrs={'class': 'form-select'}))
+    campus = forms.ModelChoiceField(label="Campus:", queryset=Campus.objects.all(), required=False, widget=forms.Select(attrs={'class': 'form-select'}))
+    pesquisa = forms.CharField(label="Matrúcula:", max_length=50, widget=forms.TextInput(attrs={'maxlength': '50', 'class': 'form-control'}), required=False)
 
 
 
