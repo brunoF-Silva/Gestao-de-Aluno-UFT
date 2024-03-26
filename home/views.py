@@ -28,14 +28,71 @@ class IndexView(TemplateView):
         alunosJubilados = Aluno.objects.filter(situacao='Jubilado')
         alunosEvadidos = Aluno.objects.filter(situacao='Evadido')
 
+        totalAlunos = Aluno.objects.all()
+        totalAlunosCount = totalAlunos.count()
+        amarela = Aluno.objects.filter(raca = 'Amarela').count()
+        branca = Aluno.objects.filter(raca = 'Branca').count()
+        indigena = Aluno.objects.filter(raca = 'Indigena').count()
+        parda = Aluno.objects.filter(raca = 'Parda').count()
+        preta = Aluno.objects.filter(raca = 'Preta').count()
+        
+        masculino = Aluno.objects.filter(sexo = 'M').count()
+        feminino = Aluno.objects.filter(sexo = 'F').count()
+        outro = Aluno.objects.filter(sexo = 'O').count()
+        
+        context ['amarela'] = '{:.2f}'.format(100 *(amarela / totalAlunosCount))
+        context ['branca'] = '{:.2f}'.format(100 *(branca / totalAlunosCount))
+        context ['indigena'] = '{:.2f}'.format(100 *(indigena / totalAlunosCount))
+        context ['parda'] = '{:.2f}'.format(100 *(parda / totalAlunosCount))
+        context ['preta'] = '{:.2f}'.format(100 *(preta / totalAlunosCount))
+        
+        totalSexo = masculino + feminino + outro
+        masculinoProp = int(100 * (masculino / totalSexo))
+        femininoProp = int(100 * (feminino / totalSexo))
+        outroProp = int(100 * (outro / totalSexo))
+        
+        # print('------>', masculino, feminino, outro)
+        anos = []
+        for aluno in totalAlunos:
+            ano = aluno.matricula[:5]
+            if ano in anos:
+                continue
+            else:
+                anos.append(ano)
+                
+        anos = sorted(anos)
+        
+        print(anos)
+        
+        anoQtd = {}
+        for ano in anos:
+            cont = 0
+            for aluno in totalAlunos:
+                print('entrou')
+                
+                if aluno.matricula[:5] == ano:
+                    print('entrou')
+                    cont+=1
+                anoQtd[ano] = cont
+        print(anoQtd)
+        campos = list(anoQtd.keys())
+
+        valores = list(anoQtd.values())
+        
         context = {
             'totalAlunosVinculados': alunosVinculados.count(),
             'totalAlunosFormados': alunosFormados.count(),
             'totalAlunosJubilados': alunosJubilados.count(),
-            'totalAlunosEvadidos': alunosEvadidos.count()
+            'totalAlunosEvadidos': alunosEvadidos.count(),
+            'masculino': masculino,
+            'feminino': feminino,
+            'outro': outro,
+            'masculinoProp' : masculinoProp,
+            'femininoProp' : femininoProp,
+            'outroProp' : outroProp,
+            'campos': campos,
+            'valores': valores,
         }
-
-        context ['']
 
         return context
     
