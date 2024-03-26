@@ -11,6 +11,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
 from django.http import HttpResponse
+import json
 
 
 
@@ -33,25 +34,21 @@ class IndexView(TemplateView):
         amarela = Aluno.objects.filter(raca = 'Amarela').count()
         branca = Aluno.objects.filter(raca = 'Branca').count()
         indigena = Aluno.objects.filter(raca = 'Indigena').count()
+        print('indigena',indigena)
         parda = Aluno.objects.filter(raca = 'Parda').count()
         preta = Aluno.objects.filter(raca = 'Preta').count()
         
         masculino = Aluno.objects.filter(sexo = 'M').count()
         feminino = Aluno.objects.filter(sexo = 'F').count()
         outro = Aluno.objects.filter(sexo = 'O').count()
-        
-        context ['amarela'] = '{:.2f}'.format(100 *(amarela / totalAlunosCount))
-        context ['branca'] = '{:.2f}'.format(100 *(branca / totalAlunosCount))
-        context ['indigena'] = '{:.2f}'.format(100 *(indigena / totalAlunosCount))
-        context ['parda'] = '{:.2f}'.format(100 *(parda / totalAlunosCount))
-        context ['preta'] = '{:.2f}'.format(100 *(preta / totalAlunosCount))
+        # context ['amarela'] = '{:.2f}'.format(100 *(amarela / totalAlunosCount))
+
         
         totalSexo = masculino + feminino + outro
         masculinoProp = int(100 * (masculino / totalSexo))
         femininoProp = int(100 * (feminino / totalSexo))
         outroProp = int(100 * (outro / totalSexo))
         
-        # print('------>', masculino, feminino, outro)
         anos = []
         for aluno in totalAlunos:
             ano = aluno.matricula[:5]
@@ -78,8 +75,14 @@ class IndexView(TemplateView):
         campos = list(anoQtd.keys())
 
         valores = list(anoQtd.values())
+        print(campos,valores)
         
         context = {
+            'amarela': '{:.2f}'.format(100 *(amarela / totalAlunosCount)),
+            'branca': '{:.2f}'.format(100 *(branca / totalAlunosCount)),
+            'indigena': '{:.2f}'.format(100 *(indigena / totalAlunosCount)),
+            'parda': '{:.2f}'.format(100 *(parda / totalAlunosCount)),
+            'preta': '{:.2f}'.format(100 *(preta / totalAlunosCount)),
             'totalAlunosVinculados': alunosVinculados.count(),
             'totalAlunosFormados': alunosFormados.count(),
             'totalAlunosJubilados': alunosJubilados.count(),
@@ -90,8 +93,8 @@ class IndexView(TemplateView):
             'masculinoProp' : masculinoProp,
             'femininoProp' : femininoProp,
             'outroProp' : outroProp,
-            'campos': campos,
-            'valores': valores,
+            'campos_json': json.dumps(campos),
+            'valores_json': json.dumps(valores),
         }
 
         return context
