@@ -117,9 +117,8 @@ class IndexView(TemplateView):
 class AlunoCreateView(CreateView):
     form_class = AlunoForm
     template_name = 'home/cadastro.html'
-    success_url = reverse_lazy('alunos-mesmo-curso')
     model = Aluno
-    formulario_enviado = False
+    formulario_enviado = True
 
     def form_valid(self, form):
         hoje = datetime.now()
@@ -130,9 +129,42 @@ class AlunoCreateView(CreateView):
         matricula = f'{ano}{semestre}{incremental}'
 
         form.instance.matricula = matricula
-
         form.instance.situacao = 'Vinculado'
+        print(self.formulario_enviado)
+        # self.formulario_enviado = True
+        print(self.formulario_enviado)
+
+
         return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        
+        context = super().get_context_data(**kwargs)
+        context['formulario_enviado'] = self.formulario_enviado
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('criar_aluno') 
+
+# class AlunoCreateView(CreateView):
+#     form_class = AlunoForm
+#     template_name = 'home/cadastro.html'
+#     success_url = reverse_lazy('alunos-mesmo-curso')
+#     model = Aluno
+#     formulario_enviado = False
+
+#     def form_valid(self, form):
+#         hoje = datetime.now()
+#         ano = hoje.year
+#         semestre = 1 if hoje.month <= 6 else 2
+#         alunos_no_ano = Aluno.objects.filter(matricula__startswith=str(f'{ano}{semestre}')).count()
+#         incremental = str(alunos_no_ano + 1).zfill(4)
+#         matricula = f'{ano}{semestre}{incremental}'
+
+#         form.instance.matricula = matricula
+
+#         form.instance.situacao = 'Vinculado'
+#         return super().form_valid(form)
     
 def mostraPopUp(request):
     formulario_enviado = False
