@@ -96,14 +96,7 @@
       <div class="modal-body">
         <form id="deleteForm" method="post">
           {% csrf_token %}
-          <div class="form-group">
-            <label for="situacao">Situação:</label>
-            <select class="form-control" id="situacao" name="situacao">
-              <option value="Evadido">Evadido</option>
-              <option value="Formado">Formado</option>
-              <option value="Jubilado">Jubilado</option>
-            </select>
-          </div>
+          {{ desvincularForm }}
           <button type="submit" class="btn btn-danger">Confirmar exclusão</button>
         </form>
       </div>

@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from datetime import datetime
 from django.db.models import Count
 from home.models import Aluno, Curso, Campus
-from .forms import AlunoForm, FiltroForm, editarAlunoForm
+from .forms import AlunoForm, DesvincularForm, FiltroForm, editarAlunoForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
@@ -319,6 +319,7 @@ class VisualizarDadosView(ListView, FormView):
     def get_context_data(self, **kwargs):
       context = super().get_context_data(**kwargs)
       context["cursos"] = Curso.objects.all()
+      context['desvincularForm'] = DesvincularForm()
       
       form = self.form_class(self.request.GET or None)
       form_data = form.data.dict() if form.is_bound else {}
@@ -398,6 +399,18 @@ class VisualizarDadosView(ListView, FormView):
                     
         print(queryset)
         return queryset
+    
+        def post(self, request, *args, **kwargs):
+            aluno = self.get_object()
+            print(aluno)
+            form = self.form_class(request.POST, request.FILES, instance=aluno)
+            print(form)
+            print(form.is_valid())
+            if form.is_valid():
+                print('UUEEEE')
+                form.save()
+                return HttpResponseRedirect(reverse('editar-perfil-aluno', kwargs={'pk': aluno.pk}))
+            return super().get(request, *args, **kwargs)   
 
     # def post(self, request, *args, **kwargs):
     #     self.object_list = self.get_queryset()

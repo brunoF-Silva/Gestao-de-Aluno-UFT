@@ -45,6 +45,10 @@ class editarAlunoForm(forms.ModelForm):
 #         return [(curso.id_curso, curso.classificacao) for curso in cursos]
     
 
+class DesvincularForm(forms.Form):
+    curso = forms.ChoiceField(label="Situação:", choices=[('Formado', 'Formado'), ('Jubilado', 'Jubilado'), ('Evadido', 'Evadido')], required=True, widget=forms.Select(attrs={'class': 'form-select'}))
+
+
 class FiltroForm(forms.Form):
     curso = forms.ChoiceField(label="Curso:", choices=[('', '-----------'), ('Ciência da Computação', 'Ciência da Computação'), ('Medicina', 'Medicina'), ('Pedagogia', 'Pedagogia'), ('Teatro', 'Teatro')], required=False, widget=forms.Select(attrs={'class': 'form-select'}))
     campus = forms.ModelChoiceField(label="Campus:", queryset=Campus.objects.all(), required=False, widget=forms.Select(attrs={'class': 'form-select'}))
