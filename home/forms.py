@@ -44,13 +44,11 @@ class editarAlunoForm(forms.ModelForm):
 #         # Cria uma lista de tuplas com os valores 'id' e 'nome' dos cursos
 #         return [(curso.id_curso, curso.classificacao) for curso in cursos]
     
-from django import forms
-from .models import Curso
 
 class FiltroForm(forms.Form):
     curso = forms.ChoiceField(label="Curso:", choices=[('', '-----------'), ('Ciência da Computação', 'Ciência da Computação'), ('Medicina', 'Medicina'), ('Pedagogia', 'Pedagogia'), ('Teatro', 'Teatro')], required=False, widget=forms.Select(attrs={'class': 'form-select'}))
     campus = forms.ModelChoiceField(label="Campus:", queryset=Campus.objects.all(), required=False, widget=forms.Select(attrs={'class': 'form-select'}))
-    pesquisa = forms.CharField(label="Matrúcula:", max_length=50, widget=forms.TextInput(attrs={'maxlength': '50', 'class': 'form-control'}), required=False)
+    pesquisa = forms.CharField(label="Matrícula:", max_length=50, widget=forms.TextInput(attrs={'maxlength': '50', 'class': 'form-control'}), required=False)
 
 
 

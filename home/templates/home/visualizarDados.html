@@ -23,44 +23,110 @@
 </form>
 
 
-    {% comment %} {% if form.is_bound and form.is_valid %} {% endcomment %}
-    <div class="table-responsive mt-4">
-        <table class="table table-bordered table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>Nome</th>
-                    <th>Matrícula</th>
-                    <th>Curso</th>
-                    <th>Campus</th>
-                    <th>Situação</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for aluno in alunos %}
-                <tr>
-                    <td>{{ aluno.nome }}</td>
-                    <td>{{ aluno.matricula }}</td>
-                    <td>{{ aluno.curso }}</td>
-                    <td>{{ aluno.curso.campus.campus }}</td>
-                    <td>{{ aluno.situacao }}</td>
-                    <td>
-                        <a href="{% url 'perfil-aluno' aluno.id  %}" class="btn btn-primary btn-sm">
-                            <i class="fa fa-eye"></i> Visualizar
-                        </a>
-                        <a href="{% url 'editar-perfil-aluno' aluno.id %}" class="btn btn-primary btn-sm">
-                            <i class="fa fa-edit"></i> Editar
-                        </a>
-                        {% comment %} <a href="{% url 'excluir_aluno' aluno.id %}" class="btn btn-danger btn-sm">
-                            <i class="fa fa-trash"></i> Excluir
-                        </a> {% endcomment %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+{% comment %} {% if form.is_bound and form.is_valid %} {% endcomment %}
+<div class="table-responsive mt-4">
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Nome</th>
+                <th>Matrícula</th>
+                <th>Curso</th>
+                <th>Campus</th>
+                <th>Situação</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for aluno in page_obj %}
+            <tr>
+                <td>{{ aluno.nome }}</td>
+                <td>{{ aluno.matricula }}</td>
+                <td>{{ aluno.curso }}</td>
+                <td>{{ aluno.curso.campus.campus }}</td>
+                <td>{{ aluno.situacao }}</td>
+                <td>
+                    <a href="{% url 'perfil-aluno' aluno.id  %}" class="btn btn-primary btn-sm">
+                        <i class="fa fa-eye"></i> Visualizar
+                    </a>
+                    <a href="{% url 'editar-perfil-aluno' aluno.id %}" class="btn btn-primary btn-sm">
+                        <i class="fa fa-edit"></i> Editar
+                    </a>
+                    {% comment %} <a href="{% url '' aluno.id %}" class="btn btn-danger btn-sm">
+                        <i class="fa fa-trash"></i> Excluir
+                    </a> {% endcomment %}
+                <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteFormPopup">
+                <i class="fa fa-trash"></i> Desvincular
+                </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
     {% comment %} {% endif %} {% endcomment %}
 </div>
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; Primeira</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+        {% endif %}
+
+        <span class="current">
+            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Próxima</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Última &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+</div>
+<div id="deleteFormPopup" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="deleteFormPopupLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteFormPopupLabel">Confirmar exclusão</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="deleteForm" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="situacao">Situação:</label>
+            <select class="form-control" id="situacao" name="situacao">
+              <option value="Evadido">Evadido</option>
+              <option value="Formado">Formado</option>
+              <option value="Jubilado">Jubilado</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-danger">Confirmar exclusão</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Script para processar o envio do formulário de exclusão
+  $(document).ready(function() {
+    $('#deleteForm').submit(function(e) {
+      e.preventDefault();
+      var formData = $(this).serialize();
+      // Aqui você pode enviar os dados do formulário para o backend usando AJAX
+      // Por exemplo:
+      // $.post('/url/do/backend/', formData, function(response) {
+      //   // Processar a resposta do backend, se necessário
+      // });
+      // Fechar o popup após o envio do formulário
+      $('#deleteFormPopup').modal('hide');
+    });
+  });
+</script>
+
 
 {% endblock %}

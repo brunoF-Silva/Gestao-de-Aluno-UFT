@@ -1,5 +1,5 @@
 {% extends "global/base.html" %}
-{% load crispy_forms_tags %}
+{% comment %} {% load crispy_forms_tags %} {% endcomment %}
 {% block content %}
 <div class="container">
     <div class="row justify-content-center">
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-    {% if formulario_enviado %}
+    {% if formularioEnviado %}
     console.log('AIIIIIi')
     var toast = new bootstrap.Toast(document.getElementById('myToast'));
     toast.show();

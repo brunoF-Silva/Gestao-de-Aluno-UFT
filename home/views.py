@@ -12,6 +12,8 @@ from django.urls import reverse
 from django.shortcuts import render
 from django.http import HttpResponse
 import json
+from django.core.paginator import Paginator
+
 
 
 
@@ -118,7 +120,17 @@ class AlunoCreateView(CreateView):
     form_class = AlunoForm
     template_name = 'home/cadastro.html'
     model = Aluno
-    formulario_enviado = True
+    
+    def dispatch(self, request, *args, **kwargs):
+        self.request.session.setdefault('formularioEnviado', False)
+        print("1 ", self.request.session['formularioEnviado'])
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['formularioEnviado'] = self.request.session['formularioEnviado']
+        print("2 ", self.request.session['formularioEnviado'])
+        return context
 
     def form_valid(self, form):
         hoje = datetime.now()
@@ -130,21 +142,15 @@ class AlunoCreateView(CreateView):
 
         form.instance.matricula = matricula
         form.instance.situacao = 'Vinculado'
-        print(self.formulario_enviado)
-        # self.formulario_enviado = True
-        print(self.formulario_enviado)
 
+        self.request.session['formularioEnviado'] = True
+        print('3 ', self.request.session['formularioEnviado'])
 
         return super().form_valid(form)
-    
-    def get_context_data(self, **kwargs):
-        
-        context = super().get_context_data(**kwargs)
-        context['formulario_enviado'] = self.formulario_enviado
-        return context
 
     def get_success_url(self):
-        return reverse_lazy('criar_aluno') 
+        return reverse_lazy('criar_aluno')
+
 
 # class AlunoCreateView(CreateView):
 #     form_class = AlunoForm
@@ -166,14 +172,14 @@ class AlunoCreateView(CreateView):
 #         form.instance.situacao = 'Vinculado'
 #         return super().form_valid(form)
     
-def mostraPopUp(request):
-    formulario_enviado = False
-    if request.method == 'POST':
-        # Processamento do formulário aqui
-        # ...
-        formulario_enviado = True  # Atualiza a variável para True após o envio do formulário
+# def mostraPopUp(request):
+#     formularioEnviado = False
+#     if request.method == 'POST':
+#         # Processamento do formulário aqui
+#         # ...
+#         formularioEnviado = True  # Atualiza a variável para True após o envio do formulário
     
-    return render(request, 'meu_template.html', {'formulario_enviado': formulario_enviado})
+#     return render(request, 'meu_template.html', {'formulario_enviado': formularioEnviado})
 
     
 
@@ -298,11 +304,15 @@ class ListaAlunosMesmoCursoView(ListView):
 #                     print("NOOOOOOOONNNNNNEEEE")
 #         return queryset
 
+
+
+
 class VisualizarDadosView(ListView, FormView):
     template_name='home/visualizarDados.html'
     model =  Aluno
-    context_object_name = 'alunos'
+    # context_object_name = 'alunos'
     form_class = FiltroForm
+    paginate_by = 10
     
     def get_context_data(self, **kwargs):
       context = super().get_context_data(**kwargs)
@@ -312,29 +322,41 @@ class VisualizarDadosView(ListView, FormView):
     def get_queryset(self):
         queryset = super().get_queryset()
         form = self.form_class(self.request.GET or None)  # Usando GET para obter os parâmetros do formulário
+        queryset = Aluno.objects.filter()
+        queryset = queryset.order_by('nome') 
+        
         if form.is_valid():
             cursoSelecionado = form.cleaned_data['curso']
             campusSelecionado = form.cleaned_data['campus']
             pesquisa = form.cleaned_data['pesquisa']
             
 
-            if cursoSelecionado is '':
+            if cursoSelecionado == '':
                 cursoSelecionado = None
                 
             print(cursoSelecionado)
             print(campusSelecionado)
             if pesquisa:
                 queryset = Aluno.objects.filter(matricula = pesquisa)
+                queryset = queryset.order_by('nome') 
+
             else:
+                print('vamos começar')
                 ids = []
                 queryset = []
-                if cursoSelecionado and campusSelecionado is None:
+
+                if cursoSelecionado is None and campusSelecionado is None:
+                    queryset = Aluno.objects.filter()
+                    queryset = queryset.order_by('nome') 
+                elif cursoSelecionado and campusSelecionado is None:
                     print('Entrou 1')
                     ids =  Curso.objects.filter(nome__icontains = cursoSelecionado).values('id')
                     ids = [e['id'] for e in ids]
                     print(ids)
                     queryset = Aluno.objects.filter(curso_id__in=ids)
+                    queryset = queryset.order_by('nome') 
 
+                    
                 elif cursoSelecionado is None and campusSelecionado:
                     print('Entrou 2')
                     print(campusSelecionado)
@@ -350,6 +372,8 @@ class VisualizarDadosView(ListView, FormView):
                     cursos = Curso.objects.filter(campus__in = ids)
                     print(cursos)
                     queryset = Aluno.objects.filter(curso__in=cursos)
+                    queryset = queryset.order_by('nome') 
+
                 elif campusSelecionado and cursoSelecionado:
                     print('Entrou 3')
 
@@ -361,9 +385,9 @@ class VisualizarDadosView(ListView, FormView):
 
                     cursos = cursos.filter(campus__in = ids)
                     queryset =  Aluno.objects.filter(curso__in = cursos)
+                    queryset = queryset.order_by('nome') 
+
                     
-                elif campusSelecionado is None and cursoSelecionado is None:
-                    print("NOOOOOOOONNNNNNEEEE")
         print(queryset)
         return queryset
 
