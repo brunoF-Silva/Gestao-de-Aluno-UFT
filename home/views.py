@@ -13,6 +13,9 @@ from django.shortcuts import render
 from django.http import HttpResponse
 import json
 from django.core.paginator import Paginator
+from django.http import QueryDict
+from urllib.parse import urlencode
+from django.urls import reverse
 
 
 
@@ -67,7 +70,6 @@ class IndexView(TemplateView):
         for ano in anos:
             cont = 0
             for aluno in totalAlunos:
-                print('entrou')
                 
                 if aluno.matricula[:5] == ano:
                     print('entrou')
@@ -317,6 +319,12 @@ class VisualizarDadosView(ListView, FormView):
     def get_context_data(self, **kwargs):
       context = super().get_context_data(**kwargs)
       context["cursos"] = Curso.objects.all()
+      
+      form = self.form_class(self.request.GET or None)
+      form_data = form.data.dict() if form.is_bound else {}
+      query_dict = QueryDict(mutable=True)
+      query_dict.update(form_data)
+      context['query_params'] = urlencode({k: v for k, v in query_dict.items() if not k.startswith("page")})
       return context
     
     def get_queryset(self):
@@ -391,7 +399,7 @@ class VisualizarDadosView(ListView, FormView):
         print(queryset)
         return queryset
 
-    def post(self, request, *args, **kwargs):
-        self.object_list = self.get_queryset()
-        context = self.get_context_data(object_list=self.object_list)
-        return self.render_to_response(context)
+    # def post(self, request, *args, **kwargs):
+    #     self.object_list = self.get_queryset()
+    #     context = self.get_context_data(object_list=self.object_list)
+    #     return self.render_to_response(context)
