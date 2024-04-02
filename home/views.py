@@ -315,6 +315,13 @@ class VisualizarDadosView(ListView, FormView):
     # context_object_name = 'alunos'
     form_class = FiltroForm
     paginate_by = 10
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST.get('campo_oculto'))
+        aluno = Aluno.objects.get(matricula=request.POST.get('campo_oculto'))
+        aluno.situacao = request.POST.get('situacao')
+        aluno.save()
+        return super().get(request, *args, **kwargs)   
     
     def get_context_data(self, **kwargs):
       context = super().get_context_data(**kwargs)
@@ -400,17 +407,6 @@ class VisualizarDadosView(ListView, FormView):
         print(queryset)
         return queryset
     
-        def post(self, request, *args, **kwargs):
-            aluno = self.get_object()
-            print(aluno)
-            form = self.form_class(request.POST, request.FILES, instance=aluno)
-            print(form)
-            print(form.is_valid())
-            if form.is_valid():
-                print('UUEEEE')
-                form.save()
-                return HttpResponseRedirect(reverse('editar-perfil-aluno', kwargs={'pk': aluno.pk}))
-            return super().get(request, *args, **kwargs)   
 
     # def post(self, request, *args, **kwargs):
     #     self.object_list = self.get_queryset()

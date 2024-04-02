@@ -46,7 +46,8 @@ class editarAlunoForm(forms.ModelForm):
     
 
 class DesvincularForm(forms.Form):
-    curso = forms.ChoiceField(label="Situação:", choices=[('Formado', 'Formado'), ('Jubilado', 'Jubilado'), ('Evadido', 'Evadido')], required=True, widget=forms.Select(attrs={'class': 'form-select'}))
+    situacao = forms.ChoiceField(label="Situação:", choices=[('Formado', 'Formado'), ('Jubilado', 'Jubilado'), ('Evadido', 'Evadido')], required=True, widget=forms.Select(attrs={'class': 'form-select'}))
+    campo_oculto = forms.CharField(widget=forms.HiddenInput)
 
 
 class FiltroForm(forms.Form):

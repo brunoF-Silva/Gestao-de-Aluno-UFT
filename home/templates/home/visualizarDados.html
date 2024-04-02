@@ -54,7 +54,7 @@
                     {% comment %} <a href="{% url '' aluno.id %}" class="btn btn-danger btn-sm">
                         <i class="fa fa-trash"></i> Excluir
                     </a> {% endcomment %}
-                <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteFormPopup">
+                <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteFormPopup" name="botão" value={{aluno.matricula}}>
                 <i class="fa fa-trash"></i> Desvincular
                 </a>
                 </td>
@@ -88,7 +88,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="deleteFormPopupLabel">Confirmar exclusão</h5>
+        <h5 class="modal-title" id="deleteFormPopupLabel">Confirmar Alteração</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -97,7 +97,7 @@
         <form id="deleteForm" method="post">
           {% csrf_token %}
           {{ desvincularForm }}
-          <button type="submit" class="btn btn-danger">Confirmar exclusão</button>
+          <button type="submit" class="btn btn-danger">Confirmar Alteração</button>
         </form>
       </div>
     </div>
@@ -106,7 +106,7 @@
 
 <script>
   // Script para processar o envio do formulário de exclusão
-  $(document).ready(function() {
+  {% comment %} $(document).ready(function() {
     $('#deleteForm').submit(function(e) {
       e.preventDefault();
       var formData = $(this).serialize();
@@ -118,6 +118,15 @@
       // Fechar o popup após o envio do formulário
       $('#deleteFormPopup').modal('hide');
     });
+  }); {% endcomment %}
+  var elementos = document.querySelectorAll('[name="botão"]');
+  console.log(elementos)
+  elementos.forEach(function(elemento) {
+    elemento.addEventListener('click', function() {
+        // Faça algo quando o elemento com o nome específico for clicado
+        console.log(elemento.getAttribute('value'));
+        document.getElementById('id_campo_oculto').value = elemento.getAttribute('value')
+      });
   });
 </script>
 
