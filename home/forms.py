@@ -7,7 +7,7 @@ from django.shortcuts import render
 
 class AlunoForm(forms.ModelForm):
     dataDeNasc = forms.DateField(
-        label='Data de Nasccccccimento',
+        label='Data de Nascimento',
         widget=forms.DateInput(attrs={'type': 'date'}),
         input_formats=['%Y-%m-%d']
     )
@@ -55,6 +55,15 @@ class FiltroForm(forms.Form):
     campus = forms.ModelChoiceField(label="Campus:", queryset=Campus.objects.all(), required=False, widget=forms.Select(attrs={'class': 'form-select'}))
     pesquisa = forms.CharField(label="Matrícula:", max_length=50, widget=forms.TextInput(attrs={'maxlength': '50', 'class': 'form-control'}), required=False)
 
+    # Adicione este método para definir as opções pré-selecionadas
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Se você passar dados iniciais para o formulário, defina as opções pré-selecionadas
+        if 'initial' in kwargs:
+            initial = kwargs['initial']
+            self.fields['curso'].initial = initial.get('curso')
+            self.fields['campus'].initial = initial.get('campus')
 
 
 # class AlunoForm(forms.ModelForm):

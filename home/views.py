@@ -315,6 +315,10 @@ class VisualizarDadosView(ListView, FormView):
     # context_object_name = 'alunos'
     form_class = FiltroForm
     paginate_by = 10
+    # query_dict = QueryDict(mutable=True)
+    # dados_iniciais = urlencode({k: v for k, v in query_dict.items()})
+    # print('DADOS INICIAIS', dados_iniciais, 'Yeah')
+    # form = FiltroForm(initial=dados_iniciais)
 
     def post(self, request, *args, **kwargs):
         print(request.POST.get('campo_oculto'))
@@ -333,6 +337,7 @@ class VisualizarDadosView(ListView, FormView):
       query_dict = QueryDict(mutable=True)
       query_dict.update(form_data)
       context['query_params'] = urlencode({k: v for k, v in query_dict.items() if not k.startswith("page")})
+      print('!!!!!!!',context)
       return context
     
     def get_queryset(self):
@@ -370,7 +375,7 @@ class VisualizarDadosView(ListView, FormView):
                     ids = [e['id'] for e in ids]
                     print(ids)
                     queryset = Aluno.objects.filter(curso_id__in=ids)
-                    queryset = queryset.order_by('nome') 
+                    queryset = queryset.order_by('-matricula') 
 
                     
                 elif cursoSelecionado is None and campusSelecionado:
@@ -388,7 +393,7 @@ class VisualizarDadosView(ListView, FormView):
                     cursos = Curso.objects.filter(campus__in = ids)
                     print(cursos)
                     queryset = Aluno.objects.filter(curso__in=cursos)
-                    queryset = queryset.order_by('nome') 
+                    queryset = queryset.order_by('-matricula') 
 
                 elif campusSelecionado and cursoSelecionado:
                     print('Entrou 3')
@@ -401,10 +406,10 @@ class VisualizarDadosView(ListView, FormView):
 
                     cursos = cursos.filter(campus__in = ids)
                     queryset =  Aluno.objects.filter(curso__in = cursos)
-                    queryset = queryset.order_by('nome') 
+                    queryset = queryset.order_by('-matricula') 
 
                     
-        print(queryset)
+        # print(queryset)
         return queryset
     
 
