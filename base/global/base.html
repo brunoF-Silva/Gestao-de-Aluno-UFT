@@ -1,11 +1,11 @@
-{% include "global/partials/head.html" %}
+{% include "global/partials/Head.html" %}
 
 <body id="page-top">
 
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- sidebar -->
-        {% include "global/partials/sidebar.html" %}
+        {% include "global/partials/Sidebar.html" %}
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -13,7 +13,7 @@
             <!-- Main Content -->
             <div id='content'>
                 <!-- topbar -->
-                {% include "global/partials/topbar.html" %}
+                {% include "global/partials/Topbar.html" %}
                 <div class="container-fluid">
                     {% block content %}{% endblock %}
                 </div>
@@ -29,16 +29,16 @@
         
     </div>
     <!-- End of Page Wrapper -->
-    {% include "global/partials/footer.html" %}
+    {% include "global/partials/Footer.html" %}
 
     <!-- Scroll to Top Button-->
-    {% include "global/partials/scroll_button.html" %}
+    {% include "global/partials/ScrollButton.html" %}
 
     <!-- Logout Modal-->
-    {% include "global/partials/logout.html" %}
+    {% include "global/partials/Logout.html" %}
 
     <!-- Scripts -->
-    {% include "global/partials/scripts.html" %}
+    {% include "global/partials/Scripts.html" %}
 </body>
 
 </html>

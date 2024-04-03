@@ -1,29 +1,21 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.views.generic.list import ListView
 from django.views.generic import TemplateView, DetailView, CreateView, TemplateView, FormView
 from django.urls import reverse_lazy
 from datetime import datetime
-from django.db.models import Count
 from home.models import Aluno, Curso, Campus
-from .forms import AlunoForm, DesvincularForm, FiltroForm, editarAlunoForm
+from .forms import AlunoForm, DesvincularForm, FiltroForm, EditarAlunoForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.shortcuts import render
-from django.http import HttpResponse
 import json
-from django.core.paginator import Paginator
 from django.http import QueryDict
 from urllib.parse import urlencode
-from django.urls import reverse
 
 
 
-
-
-class IndexView(TemplateView):
+class IndexTemplateView(TemplateView):
     model = Aluno
-    template_name = 'home/index.html'
+    template_name = 'home/Index.html'
     context_object_name = 'alunos'
     form_class = FiltroForm
 
@@ -46,7 +38,6 @@ class IndexView(TemplateView):
         masculino = Aluno.objects.filter(sexo = 'M').count()
         feminino = Aluno.objects.filter(sexo = 'F').count()
         outro = Aluno.objects.filter(sexo = 'O').count()
-        # context ['amarela'] = '{:.2f}'.format(100 *(amarela / totalAlunosCount))
 
         
         totalSexo = masculino + feminino + outro
@@ -97,8 +88,8 @@ class IndexView(TemplateView):
             'masculinoProp' : masculinoProp,
             'femininoProp' : femininoProp,
             'outroProp' : outroProp,
-            'campos_json': json.dumps(campos),
-            'valores_json': json.dumps(valores),
+            'camposJson': json.dumps(campos),
+            'valoresJson': json.dumps(valores),
         }
 
         return context
@@ -107,10 +98,10 @@ class IndexView(TemplateView):
         queryset = super().get_queryset()
         form = self.form_class(self.request.POST or None)
         if form.is_valid():
-            curso_selecionado = form.cleaned_data['curso']
-            campus_selecionado = form.cleaned_data['campus']
-            if curso_selecionado and campus_selecionado:
-                queryset = Aluno.objects.filter(curso=curso_selecionado, campus=campus_selecionado)
+            cursoSelecionado = form.cleaned_data['curso']
+            campusSelecionado = form.cleaned_data['campus']
+            if cursoSelecionado and campusSelecionado:
+                queryset = Aluno.objects.filter(curso=cursoSelecionado, campus=campusSelecionado)
         return queryset
 
     def post(self, request, *args, **kwargs):
@@ -120,7 +111,7 @@ class IndexView(TemplateView):
 
 class AlunoCreateView(CreateView):
     form_class = AlunoForm
-    template_name = 'home/cadastro.html'
+    template_name = 'home/Cadastrar.html'
     model = Aluno
     
     def dispatch(self, request, *args, **kwargs):
@@ -138,8 +129,8 @@ class AlunoCreateView(CreateView):
         hoje = datetime.now()
         ano = hoje.year
         semestre = 1 if hoje.month <= 6 else 2
-        alunos_no_ano = Aluno.objects.filter(matricula__startswith=str(f'{ano}{semestre}')).count()
-        incremental = str(alunos_no_ano + 1).zfill(4)
+        alunosNoAno = Aluno.objects.filter(matricula__startswith=str(f'{ano}{semestre}')).count()
+        incremental = str(alunosNoAno + 1).zfill(4)
         matricula = f'{ano}{semestre}{incremental}'
 
         form.instance.matricula = matricula
@@ -151,10 +142,10 @@ class AlunoCreateView(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('criar_aluno')
+        return reverse_lazy('criarAluno')
 
 
-# class AlunoCreateView(CreateView):
+# class CadastrarAlunosView(CreateView):
 #     form_class = AlunoForm
 #     template_name = 'home/cadastro.html'
 #     success_url = reverse_lazy('alunos-mesmo-curso')
@@ -165,8 +156,8 @@ class AlunoCreateView(CreateView):
 #         hoje = datetime.now()
 #         ano = hoje.year
 #         semestre = 1 if hoje.month <= 6 else 2
-#         alunos_no_ano = Aluno.objects.filter(matricula__startswith=str(f'{ano}{semestre}')).count()
-#         incremental = str(alunos_no_ano + 1).zfill(4)
+#         alunosNoAno = Aluno.objects.filter(matricula__startswith=str(f'{ano}{semestre}')).count()
+#         incremental = str(alunosNoAno + 1).zfill(4)
 #         matricula = f'{ano}{semestre}{incremental}'
 
 #         form.instance.matricula = matricula
@@ -187,7 +178,7 @@ class AlunoCreateView(CreateView):
 
 class AlunoDetailView(DetailView):
    model = Aluno
-   template_name = "home/perfil.html"
+   template_name = "home/Perfil.html"
    context_object_name = 'aluno'
    form_class = AlunoForm
 
@@ -199,16 +190,16 @@ class AlunoDetailView(DetailView):
       context['cursos'] = Curso.objects.all()
       return context
       
-class editarAlunoView(DetailView):
+class EditarAlunoDetailView(DetailView):
     model = Aluno
-    template_name = "home/editarPerfil.html"
+    template_name = "home/EditarPerfil.html"
     context_object_name = 'aluno'
-    form_class = editarAlunoForm
+    form_class = EditarAlunoForm
 
 
     def get_context_data(self, **kwargs):
-        pk = self.kwargs.get('pk')
-        aluno = Aluno.objects.get(id=pk)
+        # pk = self.kwargs.get('pk')
+        # aluno = Aluno.objects.get(id=pk)
         context = super().get_context_data(**kwargs)
         context['cursos'] = Curso.objects.all()
         return context
@@ -222,10 +213,10 @@ class editarAlunoView(DetailView):
         if form.is_valid():
             print('UUEEEE')
             form.save()
-            return HttpResponseRedirect(reverse('editar-perfil-aluno', kwargs={'pk': aluno.pk}))
+            return HttpResponseRedirect(reverse('editarPerfilAluno', kwargs={'pk': aluno.pk}))
         return super().get(request, *args, **kwargs)   
 
-class ListaAlunosMesmoCursoView(ListView):
+class ListarAlunosMesmoCursoView(ListView):
     template_name = 'home/alunos_mesmo_curso.html'
     context_object_name = 'alunos'
 
@@ -309,8 +300,8 @@ class ListaAlunosMesmoCursoView(ListView):
 
 
 
-class VisualizarDadosView(ListView, FormView):
-    template_name='home/visualizarDados.html'
+class VisualizarAlunosListView(ListView, FormView):
+    template_name='home/VisualizarAlunos.html'
     model =  Aluno
     # context_object_name = 'alunos'
     form_class = FiltroForm
@@ -321,8 +312,8 @@ class VisualizarDadosView(ListView, FormView):
     # form = FiltroForm(initial=dados_iniciais)
 
     def post(self, request, *args, **kwargs):
-        print(request.POST.get('campo_oculto'))
-        aluno = Aluno.objects.get(matricula=request.POST.get('campo_oculto'))
+        print(request.POST.get('campoOculto'))
+        aluno = Aluno.objects.get(matricula = request.POST.get('campoOculto'))
         aluno.situacao = request.POST.get('situacao')
         aluno.save()
         return super().get(request, *args, **kwargs)   

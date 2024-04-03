@@ -45,10 +45,10 @@
                 <td>{{ aluno.curso.campus.campus }}</td>
                 <td>{{ aluno.situacao }}</td>
                 <td>
-                    <a href="{% url 'perfil-aluno' aluno.id  %}" class="btn btn-primary btn-sm">
+                    <a href="{% url 'perfilAluno' aluno.id  %}" class="btn btn-primary btn-sm">
                         <i class="fa fa-eye"></i> Visualizar
                     </a>
-                    <a href="{% url 'editar-perfil-aluno' aluno.id %}" class="btn btn-primary btn-sm">
+                    <a href="{% url 'editarPerfilAluno' aluno.id %}" class="btn btn-primary btn-sm">
                         <i class="fa fa-edit"></i> Editar
                     </a>
                     {% comment %} <a href="{% url '' aluno.id %}" class="btn btn-danger btn-sm">
@@ -124,8 +124,9 @@
   elementos.forEach(function(elemento) {
     elemento.addEventListener('click', function() {
         // Faça algo quando o elemento com o nome específico for clicado
+        console.log('OIIII')
         console.log(elemento.getAttribute('value'));
-        document.getElementById('id_campo_oculto').value = elemento.getAttribute('value')
+        document.getElementById('id_campoOculto').value = elemento.getAttribute('value')
       });
   });
 </script>

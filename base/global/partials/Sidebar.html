@@ -14,7 +14,7 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="{% url 'index' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard I</span></a>
     </li>
@@ -37,8 +37,8 @@
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">OPÇÕES DE CADASTRO</h6>
-                <a class="collapse-item" href="{% url 'criar_aluno'  %}">Aluno</a>
-                <a class="collapse-item" href="register.html">Curso</a>
+                <a class="collapse-item" href="{% url 'cadastrarAluno'  %}">Aluno</a>
+                <!-- <a class="collapse-item" href="register.html">Curso</a> -->
             </div>
         </div>
     </li>
@@ -46,17 +46,17 @@
 
     <!-- Nav Item - Charts -->
     <li class="nav-item">
-        <a class="nav-link" href="{% url 'visualizarDados' %}">
+        <a class="nav-link" href="{% url 'alunos' %}">
             <i class="fas fa-fw fa-chart-area"></i>
-            <span>Visualizar Dados</span></a>
+            <span>Visualizar Alunos</span></a>
     </li>
 
     <!-- Nav Item - Tables -->
-    <li class="nav-item">
+    <!-- <li class="nav-item">
         <a class="nav-link" href="tables.html">
             <i class="fas fa-fw fa-table"></i>
             <span>Tables</span></a>
-    </li>
+    </li> -->
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">

@@ -103,8 +103,8 @@
 
                     <!-- Content Row -->
                     <script>
-                        var campos = JSON.parse('{{ campos_json|escapejs|safe }}');
-                        var valores = JSON.parse('{{ valores_json|escapejs|safe }}');
+                        var campos = JSON.parse('{{ camposJson|escapejs|safe }}');
+                        var valores = JSON.parse('{{ valoresJson|escapejs|safe }}');
                         function adicionarBarra(str) {
                             if (str.length === 5) {
                                 var novaString = str.substring(0, 4) + '/' + str.substring(4);
