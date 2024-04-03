@@ -10,7 +10,7 @@ from django.urls import reverse
 import json
 from django.http import QueryDict
 from urllib.parse import urlencode
-
+from django.db.models import F
 
 
 class IndexTemplateView(TemplateView):
@@ -144,38 +144,6 @@ class AlunoCreateView(CreateView):
     def get_success_url(self):
         return reverse_lazy('criarAluno')
 
-
-# class CadastrarAlunosView(CreateView):
-#     form_class = AlunoForm
-#     template_name = 'home/cadastro.html'
-#     success_url = reverse_lazy('alunos-mesmo-curso')
-#     model = Aluno
-#     formulario_enviado = False
-
-#     def form_valid(self, form):
-#         hoje = datetime.now()
-#         ano = hoje.year
-#         semestre = 1 if hoje.month <= 6 else 2
-#         alunosNoAno = Aluno.objects.filter(matricula__startswith=str(f'{ano}{semestre}')).count()
-#         incremental = str(alunosNoAno + 1).zfill(4)
-#         matricula = f'{ano}{semestre}{incremental}'
-
-#         form.instance.matricula = matricula
-
-#         form.instance.situacao = 'Vinculado'
-#         return super().form_valid(form)
-    
-# def mostraPopUp(request):
-#     formularioEnviado = False
-#     if request.method == 'POST':
-#         # Processamento do formulário aqui
-#         # ...
-#         formularioEnviado = True  # Atualiza a variável para True após o envio do formulário
-    
-#     return render(request, 'meu_template.html', {'formulario_enviado': formularioEnviado})
-
-    
-
 class AlunoDetailView(DetailView):
    model = Aluno
    template_name = "home/Perfil.html"
@@ -216,100 +184,15 @@ class EditarAlunoDetailView(DetailView):
             return HttpResponseRedirect(reverse('editarPerfilAluno', kwargs={'pk': aluno.pk}))
         return super().get(request, *args, **kwargs)   
 
-class ListarAlunosMesmoCursoView(ListView):
-    template_name = 'home/alunos_mesmo_curso.html'
-    context_object_name = 'alunos'
-
-    def get_queryset(self):
-        # Obter o último aluno cadastrado
-        ultimo_aluno = Aluno.objects.latest('id')
-
-        # Filtrar todos os alunos no mesmo curso do último aluno cadastrado
-        alunos_mesmo_curso = Aluno.objects.filter(curso=ultimo_aluno.curso)
-
-        return alunos_mesmo_curso
-    
-# class VisualizarDadosView(ListView, FormView):
-#     template_name='home/visualizarDados.html'
-#     model =  Aluno
-#     context_object_name = 'alunos'
-#     form_class = FiltroForm
-    
-#     def get_context_data(self, **kwargs):
-#       context = super().get_context_data(**kwargs)
-#       context["cursos"] = Curso.objects.all()
-#       return context
-    
-#     def get_queryset(self):
-#         queryset = super().get_queryset()
-#         form = self.form_class(self.request.POST or None)
-#         if form.is_valid():
-
-
-#             cursoSelecionado = form.cleaned_data['curso']
-#             campusSelecionado = form.cleaned_data['campus']
-#             pesquisa = form.cleaned_data['pesquisa']
-            
-#             print(cursoSelecionado)
-#             print(campusSelecionado)
-
-#             if cursoSelecionado is '':
-#                 cursoSelecionado = None
-                
-#             if pesquisa:
-#                 queryset = Aluno.objects.filter(matricula = pesquisa)
-#             else:
-#                 ids = []
-#                 queryset = []
-#                 if cursoSelecionado and campusSelecionado is None:
-#                     print('Entrou 1')
-#                     ids =  Curso.objects.filter(nome__icontains = cursoSelecionado).values('id')
-#                     ids = [e['id'] for e in ids]
-#                     print(ids)
-#                     queryset = Aluno.objects.filter(curso_id__in=ids)
-
-#                 elif cursoSelecionado is None and campusSelecionado:
-#                     print('Entrou 2')
-#                     print(campusSelecionado)
-
-#                     # cursos = Curso.objects.all()
-#                     # cursos = cursos.filter(campus__campus=campusSelecionado)
-#                     ids = Campus.objects.filter(campus__icontains = campusSelecionado).values('id')
-#                     print(ids)
-                    
-#                     ids = [e['id'] for e in ids]
-
-#                     print(ids)
-#                     cursos = Curso.objects.filter(campus__in = ids)
-#                     print(cursos)
-#                     queryset = Aluno.objects.filter(curso__in=cursos)
-#                 elif campusSelecionado and cursoSelecionado:
-#                     print('Entrou 3')
-
-#                     cursos =  Curso.objects.filter(nome__icontains = cursoSelecionado)
-#                     ids = Campus.objects.filter(campus__icontains = campusSelecionado).values('id')
-#                     ids = [e['id'] for e in ids]
-
-#                     cursos = cursos.filter(campus__in = ids)
-#                     queryset =  Aluno.objects.filter(curso__in = cursos)
-                    
-#                 elif campusSelecionado is None and cursoSelecionado is None:
-#                     print("NOOOOOOOONNNNNNEEEE")
-#         return queryset
-
-
-
-
 class VisualizarAlunosListView(ListView, FormView):
     template_name='home/VisualizarAlunos.html'
     model =  Aluno
     # context_object_name = 'alunos'
     form_class = FiltroForm
     paginate_by = 10
-    # query_dict = QueryDict(mutable=True)
-    # dados_iniciais = urlencode({k: v for k, v in query_dict.items()})
-    # print('DADOS INICIAIS', dados_iniciais, 'Yeah')
-    # form = FiltroForm(initial=dados_iniciais)
+    querysetGeral = []
+    curso = ''
+    campus = ''
 
     def post(self, request, *args, **kwargs):
         print(request.POST.get('campoOculto'))
@@ -328,7 +211,12 @@ class VisualizarAlunosListView(ListView, FormView):
       query_dict = QueryDict(mutable=True)
       query_dict.update(form_data)
       context['query_params'] = urlencode({k: v for k, v in query_dict.items() if not k.startswith("page")})
-      print('!!!!!!!',context)
+      context["alunosTotal"] = self.querysetGeral
+      context["curso"] = self.curso
+      context["campus"] = self.campus
+      for index, item in enumerate(reversed(context['page_obj']), (self.paginate_by * (context['page_obj'].paginator.num_pages - context['page_obj'].number))+1):
+          item.index = index
+
       return context
     
     def get_queryset(self):
@@ -346,33 +234,28 @@ class VisualizarAlunosListView(ListView, FormView):
             if cursoSelecionado == '':
                 cursoSelecionado = None
                 
-            print(cursoSelecionado)
-            print(campusSelecionado)
             if pesquisa:
                 queryset = Aluno.objects.filter(matricula = pesquisa)
                 queryset = queryset.order_by('nome') 
 
             else:
-                print('vamos começar')
                 ids = []
                 queryset = []
+                self.curso = cursoSelecionado
+                self.campus = campusSelecionado
 
                 if cursoSelecionado is None and campusSelecionado is None:
                     queryset = Aluno.objects.filter()
                     queryset = queryset.order_by('nome') 
+
                 elif cursoSelecionado and campusSelecionado is None:
-                    print('Entrou 1')
                     ids =  Curso.objects.filter(nome__icontains = cursoSelecionado).values('id')
                     ids = [e['id'] for e in ids]
                     print(ids)
                     queryset = Aluno.objects.filter(curso_id__in=ids)
                     queryset = queryset.order_by('-matricula') 
-
                     
                 elif cursoSelecionado is None and campusSelecionado:
-                    print('Entrou 2')
-                    print(campusSelecionado)
-
                     # cursos = Curso.objects.all()
                     # cursos = cursos.filter(campus__campus=campusSelecionado)
                     ids = Campus.objects.filter(campus__icontains = campusSelecionado).values('id')
@@ -387,8 +270,6 @@ class VisualizarAlunosListView(ListView, FormView):
                     queryset = queryset.order_by('-matricula') 
 
                 elif campusSelecionado and cursoSelecionado:
-                    print('Entrou 3')
-
                     cursos =  Curso.objects.filter(nome__icontains = cursoSelecionado)
                     ids = Campus.objects.filter(campus__icontains = campusSelecionado).values('id')
                     ids = [e['id'] for e in ids]
@@ -397,14 +278,7 @@ class VisualizarAlunosListView(ListView, FormView):
 
                     cursos = cursos.filter(campus__in = ids)
                     queryset =  Aluno.objects.filter(curso__in = cursos)
-                    queryset = queryset.order_by('-matricula') 
-
-                    
-        # print(queryset)
+                    queryset = queryset.order_by('-matricula')
+        queryset = queryset.annotate(index=F('id'))
+        self.querysetGeral = queryset.count()
         return queryset
-    
-
-    # def post(self, request, *args, **kwargs):
-    #     self.object_list = self.get_queryset()
-    #     context = self.get_context_data(object_list=self.object_list)
-    #     return self.render_to_response(context)

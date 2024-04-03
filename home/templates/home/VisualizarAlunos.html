@@ -28,6 +28,7 @@
     <table class="table table-bordered table-hover">
         <thead class="table-dark">
             <tr>
+                <th>Nº</th>
                 <th>Nome</th>
                 <th>Matrícula</th>
                 <th>Curso</th>
@@ -39,6 +40,7 @@
         <tbody>
             {% for aluno in page_obj %}
             <tr>
+                <td>{{ aluno.index }}</td>
                 <td>{{ aluno.nome }}</td>
                 <td>{{ aluno.matricula }}</td>
                 <td>{{ aluno.curso }}</td>
@@ -51,19 +53,19 @@
                     <a href="{% url 'editarPerfilAluno' aluno.id %}" class="btn btn-primary btn-sm">
                         <i class="fa fa-edit"></i> Editar
                     </a>
-                    {% comment %} <a href="{% url '' aluno.id %}" class="btn btn-danger btn-sm">
-                        <i class="fa fa-trash"></i> Excluir
-                    </a> {% endcomment %}
-                <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteFormPopup" name="botão" value={{aluno.matricula}}>
-                <i class="fa fa-trash"></i> Desvincular
-                </a>
+                    <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteFormPopup" name="botão" value={{aluno.matricula}}>
+                    <i class="fa fa-trash"></i> Desvincular
+                    </a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
-    {% comment %} {% endif %} {% endcomment %}
+
+<dig>
+  <h6>Total: {{ alunosTotal }} alunos{% if  curso != None %} para {{ curso }}{% endif %} {% if campus != None %} no campus {{ campus }}{% endif %}<h6>
+<div>
 </div>
 <div class="pagination d-flex justify-content-center">
   <span class="step-links">
@@ -105,26 +107,10 @@
 </div>
 
 <script>
-  // Script para processar o envio do formulário de exclusão
-  {% comment %} $(document).ready(function() {
-    $('#deleteForm').submit(function(e) {
-      e.preventDefault();
-      var formData = $(this).serialize();
-      // Aqui você pode enviar os dados do formulário para o backend usando AJAX
-      // Por exemplo:
-      // $.post('/url/do/backend/', formData, function(response) {
-      //   // Processar a resposta do backend, se necessário
-      // });
-      // Fechar o popup após o envio do formulário
-      $('#deleteFormPopup').modal('hide');
-    });
-  }); {% endcomment %}
   var elementos = document.querySelectorAll('[name="botão"]');
   console.log(elementos)
   elementos.forEach(function(elemento) {
     elemento.addEventListener('click', function() {
-        // Faça algo quando o elemento com o nome específico for clicado
-        console.log('OIIII')
         console.log(elemento.getAttribute('value'));
         document.getElementById('id_campoOculto').value = elemento.getAttribute('value')
       });

@@ -8,5 +8,4 @@ urlpatterns = [
   path('alunos/', views.VisualizarAlunosListView.as_view(), name='alunos'),
   path("alunos/perfil/<uuid:pk>", views.AlunoDetailView.as_view(), name='perfilAluno'),
   path("alunos/editar/<uuid:pk>", views.EditarAlunoDetailView.as_view(), name='editarPerfilAluno'),
-  # path('mesmo-curso/', views.ListaAlunosMesmoCursoView.as_view(), name='alunos-mesmo-curso'),
 ]
