@@ -35,15 +35,16 @@ class IndexTemplateView(TemplateView):
         parda = Aluno.objects.filter(raca = 'Parda').count()
         preta = Aluno.objects.filter(raca = 'Preta').count()
         
-        masculino = Aluno.objects.filter(sexo = 'M').count()
-        feminino = Aluno.objects.filter(sexo = 'F').count()
-        outro = Aluno.objects.filter(sexo = 'O').count()
+        enem = Aluno.objects.filter(formaDeIngresso = 'ENEM').count()
+        psc = Aluno.objects.filter(formaDeIngresso = 'PSC').count()
+        vestibular = Aluno.objects.filter(formaDeIngresso = 'Vestibular').count()
 
         
-        totalSexo = masculino + feminino + outro
-        masculinoProp = int(100 * (masculino / totalSexo))
-        femininoProp = int(100 * (feminino / totalSexo))
-        outroProp = int(100 * (outro / totalSexo))
+        formaIngressoTotal = enem + psc + vestibular
+        enemProp = int(100 * (enem / formaIngressoTotal))
+        pscProp = int(100 * (psc / formaIngressoTotal))
+        vestibularProp = int(100 * (vestibular / formaIngressoTotal))
+        print('Oiiii',vestibularProp)
         
         anos = []
         for aluno in totalAlunos:
@@ -73,21 +74,27 @@ class IndexTemplateView(TemplateView):
         print(campos,valores)
         
         context = {
+            'totalAlunosCount': totalAlunosCount,
             'amarela': '{:.2f}'.format(100 *(amarela / totalAlunosCount)),
             'branca': '{:.2f}'.format(100 *(branca / totalAlunosCount)),
             'indigena': '{:.2f}'.format(100 *(indigena / totalAlunosCount)),
             'parda': '{:.2f}'.format(100 *(parda / totalAlunosCount)),
             'preta': '{:.2f}'.format(100 *(preta / totalAlunosCount)),
+            'amarelaQtd': amarela,
+            'brancaQtd': branca,
+            'indigenaQtd': indigena,
+            'pardaQtd': parda,
+            'pretaQtd': preta,
             'totalAlunosVinculados': alunosVinculados.count(),
             'totalAlunosFormados': alunosFormados.count(),
             'totalAlunosJubilados': alunosJubilados.count(),
             'totalAlunosEvadidos': alunosEvadidos.count(),
-            'masculino': masculino,
-            'feminino': feminino,
-            'outro': outro,
-            'masculinoProp' : masculinoProp,
-            'femininoProp' : femininoProp,
-            'outroProp' : outroProp,
+            'enem': enem,
+            'psc': psc,
+            'vestibular': vestibular,
+            'enemProp' : enemProp,
+            'pscProp' : pscProp,
+            'vestibularProp' : vestibularProp,
             'camposJson': json.dumps(campos),
             'valoresJson': json.dumps(valores),
         }
@@ -113,19 +120,22 @@ class AlunoCreateView(CreateView):
     form_class = AlunoForm
     template_name = 'home/Cadastrar.html'
     model = Aluno
-    
-    def dispatch(self, request, *args, **kwargs):
-        self.request.session.setdefault('formularioEnviado', False)
-        print("1 ", self.request.session['formularioEnviado'])
-        return super().dispatch(request, *args, **kwargs)
+    formularioEnviado = False
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     self.request.session.setdefault('formularioEnviado', False)
+    #     print("1 ", self.request.session['formularioEnviado'])
+    #     return super().dispatch(request, *args, **kwargs)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['formularioEnviado'] = self.request.session['formularioEnviado']
-        print("2 ", self.request.session['formularioEnviado'])
+        print("2 !!!!!!!!!!!", self.request.session['formularioEnviado'])
+        context['formularioEnviado'] = self.formularioEnviado
+        AlunoCreateView.formularioEnviado = False
         return context
 
     def form_valid(self, form):
+        AlunoCreateView.formularioEnviado = True
         hoje = datetime.now()
         ano = hoje.year
         semestre = 1 if hoje.month <= 6 else 2
@@ -142,7 +152,8 @@ class AlunoCreateView(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('criarAluno')
+        print('4-----------')
+        return reverse_lazy('cadastrarAluno')
 
 class AlunoDetailView(DetailView):
    model = Aluno
