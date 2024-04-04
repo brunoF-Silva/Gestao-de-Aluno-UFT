@@ -193,6 +193,7 @@ class VisualizarAlunosListView(ListView, FormView):
     querysetGeral = []
     curso = ''
     campus = ''
+    salvaQueryset = {}
 
     def post(self, request, *args, **kwargs):
         print(request.POST.get('campoOculto'))
@@ -214,9 +215,6 @@ class VisualizarAlunosListView(ListView, FormView):
       context["alunosTotal"] = self.querysetGeral
       context["curso"] = self.curso
       context["campus"] = self.campus
-      for index, item in enumerate(reversed(context['page_obj']), (self.paginate_by * (context['page_obj'].paginator.num_pages - context['page_obj'].number))+1):
-          item.index = index
-
       return context
     
     def get_queryset(self):
@@ -224,6 +222,10 @@ class VisualizarAlunosListView(ListView, FormView):
         form = self.form_class(self.request.GET or None)  # Usando GET para obter os parâmetros do formulário
         queryset = Aluno.objects.filter()
         queryset = queryset.order_by('nome') 
+        print('OLHA SOOOOOOOOO')
+        self.curso = None
+        self.campus = None
+
         
         if form.is_valid():
             cursoSelecionado = form.cleaned_data['curso']
@@ -279,6 +281,12 @@ class VisualizarAlunosListView(ListView, FormView):
                     cursos = cursos.filter(campus__in = ids)
                     queryset =  Aluno.objects.filter(curso__in = cursos)
                     queryset = queryset.order_by('-matricula')
+
         queryset = queryset.annotate(index=F('id'))
+        self.salvaQueryset = queryset
+
+        for index, item in enumerate(reversed(queryset), 1):
+          item.index = index
+          
         self.querysetGeral = queryset.count()
         return queryset
