@@ -1,6 +1,6 @@
 # forms.py
 from django import forms
-from .models import Aluno, Curso, Campus
+from .models import Aluno, Campus
 from datetime import datetime
 from django.shortcuts import render
 

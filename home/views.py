@@ -296,8 +296,12 @@ class VisualizarAlunosListView(ListView, FormView):
         queryset = queryset.annotate(index=F('id'))
         self.salvaQueryset = queryset
 
+        # if cursoSelecionado and campusSelecionado:
+        #    for index, item in (reversed(queryset), 1):
+        #         item.index = index
+        # else:
         for index, item in enumerate(reversed(queryset), 1):
-          item.index = index
-          
+            item.index = index
+        
         self.querysetGeral = queryset.count()
         return queryset

@@ -42,7 +42,7 @@ class Aluno(models.Model):
     situacao = models.CharField(max_length=10)
     formaDeIngresso = models.CharField(verbose_name='Forma de Ingresso', max_length=10, choices=[('ENEM', 'Exame Nacional do Ensino Médio'), ('PSC', 'Processo Seletivo Complementar'), ('Vestibular', 'Vestibular')])
     sexo = models.CharField(max_length=1, choices=[('M', 'Masculino'), ('F', 'Feminino'), ('O', 'Outro')])
-    raca = models.CharField(verbose_name='Raça', max_length=10, choices=[('Amarela', 'Amarela'), ('Branca', 'Branca'), ('Indigena', 'Indigena'), ('Parda', 'Parda'), ('Preta', 'Preta')])
+    raca = models.CharField(verbose_name='Raça', max_length=10, choices=[('1', 'Amarela'), ('Branca', 'Branca'), ('Indigena', 'Indigena'), ('Parda', 'Parda'), ('Preta', 'Preta')])
 
     #class Meta:
         #managed = False 

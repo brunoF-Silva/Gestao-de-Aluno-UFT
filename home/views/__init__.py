@@ -1,0 +1,5 @@
+from home.views.aluno.AlunoCreateView import AlunoCreateView
+from .aluno.AlunoDetailView import AlunoDetailView
+from .aluno.EditarAlunoDetailView import EditarAlunoDetailView
+from .aluno.VisualizarAlunoListView import VisualizarAlunosListView
+from .IndexTemplateView import IndexTemplateView
