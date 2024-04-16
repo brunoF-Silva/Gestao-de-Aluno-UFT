@@ -22,7 +22,7 @@ class Aluno(models.Model):
     class Meta:
         verbose_name = 'Aluno'
         verbose_name_plural = 'Alunos'
-        ordering = ['nome',]
+        ordering = ['nome']
 
     def __str__(self):
         return self.nome

@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 ##########
 from home.models import Aluno, Curso
-from home.forms.aluno import EditarAlunoForm
+from home.forms import EditarAlunoForm
 
 class EditarAlunoDetailView(DetailView):
     model = Aluno

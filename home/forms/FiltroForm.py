@@ -1,5 +1,5 @@
 from django import forms
-from home.models.campus import Campus
+from home.models import Campus
 
 class FiltroForm(forms.Form):
     curso = forms.ChoiceField(label="Curso:", choices=[('', '-----------'), ('Ciência da Computação', 'Ciência da Computação'), ('Medicina', 'Medicina'), ('Pedagogia', 'Pedagogia'), ('Teatro', 'Teatro')], required=False, widget=forms.Select(attrs={'class': 'form-select'}))
