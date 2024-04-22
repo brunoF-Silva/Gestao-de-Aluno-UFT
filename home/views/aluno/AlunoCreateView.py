@@ -18,8 +18,8 @@ class AlunoCreateView(CreateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print("2 !!!!!!!!!!!", self.request.session['formularioEnviado'])
         context['formularioEnviado'] = self.formularioEnviado
+        # print("2 !!!!!!!!!!!", self.request.session['formularioEnviado'])
         AlunoCreateView.formularioEnviado = False
         return context
 

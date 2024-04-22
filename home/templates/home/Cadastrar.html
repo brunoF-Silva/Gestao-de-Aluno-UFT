@@ -1,6 +1,8 @@
 {% extends "global/base.html" %}
 {% comment %} {% load crispy_forms_tags %} {% endcomment %}
+{% load static %}
 {% block content %}
+<!-- Content -->
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -8,15 +10,87 @@
             <div class="row justify-content-center">
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    {{ form.as_p }}
+                        {{ form.as_p }}
                 </div>
                 <div class="row justify-content-center">
-                <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+
+{% comment %} <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1 class="text-center mb-4">Cadastro de Aluno</h1>
+            <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_nome" class="form-label">Nome:</label>
+                    <input type="text" name="nome" id="id_nome" class="form-control" required>
+                    <div class="invalid-feedback">
+                        Por favor, preencha este campo.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="id_nome" class="form-label">Data de Nascimento:</label>
+                    <input type="date" name="dataDeNasc" id="id_" class="form-control" required>
+                    <div class="invalid-feedback">
+                        Por favor, preencha este campo.
+                    </div>
+                </div>               
+                <div class="mb-3">
+                    <label for="id_nome" class="form-label">Sexo:</label>
+                    <input type="text" name="sexo" id="id_nome" class="form-select" required>
+                    <div class="invalid-feedback">
+                        Por favor, preencha este campo.
+                    </div>
+                </div>                
+                <div class="mb-3">
+                    <label for="id_nome" class="form-label">Raça:</label>
+                    <input type="text" name="nome" id="id_nome" class="form-control" required>
+                    <div class="invalid-feedback">
+                        Por favor, preencha este campo.
+                    </div>
+                </div>                
+                <div class="mb-3">
+                    <label for="id_nome" class="form-label">CPF:</label>
+                    <input type="text" name="nome" id="id_nome" class="form-control" required>
+                    <div class="invalid-feedback">
+                        Por favor, preencha este campo.
+                    </div>
+                </div>                
+                <div class="mb-3">
+                    <label for="id_nome" class="form-label">Curso:</label>
+                    <input type="text" name="nome" id="id_nome" class="form-control" required>
+                    <div class="invalid-feedback">
+                        Por favor, preencha este campo.
+                    </div>
+                </div>                
+                <div class="mb-3">
+                    <label for="id_nome" class="form-label">Forma de Ingresso:</label>
+                    <input type="text" name="nome" id="id_nome" class="form-control" required>
+                    <div class="invalid-feedback">
+                        Por favor, preencha este campo.
+                    </div>
+                </div>                
+                <div class="mb-3">
+                    <label for="id_nome" class="form-label">Foto:</label>
+                    <input type="text" name="nome" id="id_nome" class="form-control" required>
+                    <div class="invalid-feedback">
+                        Por favor, preencha este campo.
+                    </div>
+                </div>
+                <!-- Repita os trechos acima para cada campo do seu formulário -->
+                <div class="row justify-content-center">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>  {% endcomment %}
 
 <!-- Pop-up -->
 <div id="myModal" class="modal fade" role="dialog">
@@ -70,6 +144,13 @@ document.addEventListener('DOMContentLoaded', function () {
     toast.show();
     {% endif %}
 });
+
+$(document).ready(function(){
+    var labels = document.querySelectorAll('label');
+    labels.forEach(function(label){
+        label.classList.add('form-label');
+    })
+})
 </script>  
 
 {% endblock content %}

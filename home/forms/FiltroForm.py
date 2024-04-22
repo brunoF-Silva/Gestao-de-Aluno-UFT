@@ -9,6 +9,9 @@ class FiltroForm(forms.Form):
     # Adicione este método para definir as opções pré-selecionadas
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['curso'].widget.attrs.update({'class': 'form-control'})
+        self.fields['campus'].widget.attrs.update({'class': 'form-control'})
+        self.fields['pesquisa'].widget.attrs.update({'class': 'form-control'})
         
         # Se você passar dados iniciais para o formulário, defina as opções pré-selecionadas
         if 'initial' in kwargs:

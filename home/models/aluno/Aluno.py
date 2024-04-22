@@ -13,11 +13,11 @@ class Aluno(models.Model):
     # dataDeNascimento
     # MODELO_DE_CADATSRO=True
     dataDeNasc = models.DateField(help_text='DD/MM/AAAA',verbose_name= 'Data de Nascimento')
-    foto = models.ImageField(upload_to='home/media')
     situacao = models.CharField(max_length=10)
     formaDeIngresso = models.CharField(verbose_name='Forma de Ingresso', max_length=10, choices=[('ENEM', 'Exame Nacional do Ensino Médio'), ('PSC', 'Processo Seletivo Complementar'), ('Vestibular', 'Vestibular')])
     sexo = models.CharField(max_length=1, choices=[('M', 'Masculino'), ('F', 'Feminino'), ('O', 'Outro')])
     raca = models.CharField(verbose_name='Raça', max_length=10, choices=[('1', 'Amarela'), ('Branca', 'Branca'), ('Indigena', 'Indigena'), ('Parda', 'Parda'), ('Preta', 'Preta')])
+    foto = models.ImageField(upload_to='home/media')
 
     class Meta:
         verbose_name = 'Aluno'

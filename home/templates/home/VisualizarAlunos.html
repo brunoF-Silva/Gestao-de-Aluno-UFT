@@ -4,23 +4,32 @@
 <div class="container">
     <h2 class="mt-4 mb-4">Visualizar Aluno</h2>
     
-<form method="get" class="row align-items-end">
-    <div class="col-md-4">
-        <label for="curso" class="form-label">{{ form.curso.label }}</label>
-        {{ form.curso }}
-    </div>
-    <div class="col-md-4">
-        <label for="campus" class="form-label">{{ form.campus.label }}</label>
-        {{ form.campus }}
-    </div>
-    <div class="col-md-4">
-        <label for="pesquisa" class="form-label">{{ form.pesquisa.label }}</label>
-        {{ form.pesquisa }}
-    </div>
-    <div class="col-md-12">
-        <button type="submit" class="btn btn-primary">Filtrar</button>
-    </div>
-</form>
+    <form method="get" class="row align-items-end">
+      <div class="col-md-8">
+          <div class="row">
+              <div class="col-md-4">
+                  <label for="curso" class="form-label">{{ form.curso.label }}</label>
+                  {{ form.curso }}
+              </div>
+              <div class="col-md-4">
+                  <label for="campus" class="form-label">{{ form.campus.label }}</label>
+                  {{ form.campus }}
+              </div>
+              <div class="col-md-4">
+                  <label for="pesquisa" class="form-label">{{ form.pesquisa.label }}</label>
+                  {{ form.pesquisa }}
+              </div>
+          </div>
+      </div>
+      <div class="col-md-4">
+          <div class="row">
+              <div class="col-md-12">
+                  <button type="submit" class="btn btn-primary">Filtrar</button>
+              </div>
+          </div>
+      </div>
+  </form>
+  
 
 
 {% comment %} {% if form.is_bound and form.is_valid %} {% endcomment %}
@@ -53,7 +62,7 @@
                     <a href="{% url 'editarPerfilAluno' aluno.id %}" class="btn btn-primary btn-sm">
                         <i class="fa fa-edit"></i> Editar
                     </a>
-                    <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteFormPopup" name="botão" value={{aluno.matricula}}>
+                    <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteFormPopup" name="botão" value={{aluno.matricula}} alunoNome = {{aluno.nome}}>
                     <i class="fa fa-trash"></i> Desvincular
                     </a>
                 </td>
@@ -99,7 +108,7 @@
         <form id="deleteForm" method="post">
           {% csrf_token %}
           {{ desvincularForm }}
-          <button type="submit" class="btn btn-danger">Confirmar Alteração</button>
+          <button type="submit" class="btn btn-danger mt-2">Confirmar Alteração</button>
         </form>
       </div>
     </div>
